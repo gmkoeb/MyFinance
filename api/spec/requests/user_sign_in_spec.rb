@@ -12,4 +12,14 @@ describe 'User logs in' do
     expect(json_response['token']['exp']).to eq 24.hours.to_i
     expect(json_response['user']['name']).to eq 'Gabriel'
   end
+
+  it 'with wrong parameters' do
+    User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+    allow(JsonWebToken).to receive(:encode).with(user_id: 1).and_return('123456')
+    post users_sign_in_path, params: { user: { email: 'test2@test.com', password: '4eqweqweqw' } }
+
+    json_response = JSON.parse(response.body)
+    expect(response.status).to eq 401
+    expect(json_response['error']).to eq 'Wrong password or email.'
+  end
 end
