@@ -26,12 +26,26 @@ describe 'Bills API' do
 
     it 'cant create a bill while not authenticated' do
       post company_bills_path(1), params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
-                                         paid: true, payment_date: Time.zone.now } }
+                                                    paid: true, payment_date: Time.zone.now } }
 
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
       expect(json_response['message']).to eq "Couldn't find an active session."
+    end
+
+    it 'doesnt create a bill with wrong parameters' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+      company = user.companies.create(name: 'Casa')
+      token = login_as(user)
+
+      post company_bills_path(company), headers: { Authorization: token },
+                                        params: { bill: { name: '', billing_company: '', value: 200, 
+                                                          payment_date: Time.zone.now } }
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 400
+      expect(json_response['message']).to eq "Couldn't create bill. Check the errors [\"Name can't be blank\", \"Billing company can't be blank\"]"
     end
   end
 
@@ -41,8 +55,8 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Academia')
       bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
-                                  value: 240, payment_date: Time.now)
-      
+                                  value: 240, payment_date: Time.zone.now)
+
       patch bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
 
       json_response = JSON.parse(response.body)
@@ -61,13 +75,28 @@ describe 'Bills API' do
       token = login_as(second_user)
       company = first_user.companies.create(name: 'Academia')
       bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
-                                  value: 240, payment_date: Time.now)
-      
+                                  value: 240, payment_date: Time.zone.now)
+
       patch bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
       bill.reload
       json_response = JSON.parse(response.body)
       expect(json_response['message']).to eq 'Permission denied.'
       expect(bill.name).to_not eq 'New Name'
+    end
+
+    it 'doesnt update bill with wrong parameters' do
+      user = User.create(name: 'Gabriel', email: 'gabriel@gabriel.com', password: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Academia')
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
+                                  value: 240, payment_date: Time.zone.now)
+
+      patch bill_path(bill), headers: { Authorization: token }, params: { bill: { name: '', paid: 'true' } }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 400
+      expect(json_response['message']).to eq "Couldn't update bill. Check the errors [\"Name can't be blank\"]"
     end
   end
 end

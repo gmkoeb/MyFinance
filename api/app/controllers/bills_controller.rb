@@ -5,7 +5,7 @@ class BillsController < ApplicationController
 
   def create
     bill = @company.bills.build(bill_params)
-    
+
     return render status: :created, json: { message: 'Bill created with success' } if bill.save
 
     render status: :bad_request,
@@ -13,12 +13,10 @@ class BillsController < ApplicationController
   end
 
   def update
-    if @bill.update(bill_params)
-      return render status: :ok, json: { message: 'Bill updated with success' }
-    else
-      render status: :bad_request,
-             json: { message: "Couldn't update bill. Check the errors #{bill.errors.full_messages}" }
-    end
+    return render status: :ok, json: { message: 'Bill updated with success' } if @bill.update(bill_params)
+
+    render status: :bad_request,
+           json: { message: "Couldn't update bill. Check the errors #{@bill.errors.full_messages}" }
   end
 
   private
@@ -34,6 +32,6 @@ class BillsController < ApplicationController
 
   def set_bill_and_check_user
     @bill = Bill.find(params[:id])
-    return render status: :unauthorized, json: { message: 'Permission denied.' } if @bill.company.user != @current_user
+    render status: :unauthorized, json: { message: 'Permission denied.' } if @bill.company.user != @current_user
   end
 end

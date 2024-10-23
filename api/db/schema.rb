@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_23_165306) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_23_180938) do
   create_table "bills", force: :cascade do |t|
     t.string "name"
     t.string "billing_company"
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_23_165306) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_companies_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_companies_on_user_id"
   end
 

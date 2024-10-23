@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Companies API' do
   context 'POST /companies' do
     it 'creates a bill with success' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
 
       post companies_path, headers: { Authorization: token }, params: { company: { name: 'Casa' } }
@@ -17,6 +17,18 @@ describe 'Companies API' do
       expect(company.name).to eq 'Casa'
     end
 
+    it 'doesnt create a company with wrong parameters' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+
+      post companies_path, headers: { Authorization: token }, params: { company: { name: '' } }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 400
+      expect(json_response['message']).to eq "Couldn't create company. Check the errors [\"Name can't be blank\"]"
+    end
+
     it 'cant create a company while not authenticated' do
       post companies_path, params: { bill: { name: 'Academia' } }
 
@@ -24,6 +36,50 @@ describe 'Companies API' do
 
       expect(response.status).to eq 401
       expect(json_response['message']).to eq "Couldn't find an active session."
+    end
+  end
+
+  context 'PATCH /company/:id' do
+    it 'updates a specific company with success' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      company = user.companies.create(name: 'Casa')
+      token = login_as(user)
+      patch company_path(company), headers: { Authorization: token },
+                                   params: { company: { name: 'Academia' } }
+
+      json_response = JSON.parse(response.body)
+      company.reload
+      expect(response.status).to eq 200
+      expect(company.name).to eq 'Academia'
+      expect(json_response['message']).to eq 'Company updated with success.'
+    end
+
+    it 'with invalid parameters' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      company = user.companies.create(name: 'Casa')
+      token = login_as(user)
+      patch company_path(company), headers: { Authorization: token },
+                                   params: { company: { name: '' } }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 400
+      expect(company.name).to eq 'Casa'
+      expect(json_response['message']).to eq "Couldn't update company. Check the errors [\"Name can't be blank\"]"
+    end
+
+    it 'user can only update his own company' do
+      first_user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      second_user = User.create(name: 'Test', email: 'email@email.com', password: '123456')
+      company = first_user.companies.create(name: 'Casa')
+
+      token = login_as(second_user)
+      patch company_path(company), headers: { Authorization: token },
+                                   params: { company: { name: 'Academia' } }
+
+      json_response = JSON.parse(response.body)
+      expect(response.status).to eq 401
+      expect(json_response['message']).to eq 'Permission denied.'
     end
   end
 end
