@@ -47,11 +47,27 @@ describe 'Bills API' do
 
       json_response = JSON.parse(response.body)
       bill.reload
-      
+
       expect(response.status).to eq 200
       expect(json_response['message']).to eq 'Bill updated with success'
       expect(bill.name).to eq 'New Name'
       expect(bill.paid).to eq true
+    end
+
+    it 'cant update another user bill' do
+      first_user = User.create(name: 'Gabriel', email: 'gabriel@gabriel.com', password: '123456')
+      second_user = User.create(name: 'Test', email: 'test@email.com', password: '123456')
+
+      token = login_as(second_user)
+      company = first_user.companies.create(name: 'Academia')
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
+                                  value: 240, payment_date: Time.now)
+      
+      patch bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
+      bill.reload
+      json_response = JSON.parse(response.body)
+      expect(json_response['message']).to eq 'Permission denied.'
+      expect(bill.name).to_not eq 'New Name'
     end
   end
 end
