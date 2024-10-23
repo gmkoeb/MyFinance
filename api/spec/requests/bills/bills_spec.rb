@@ -99,4 +99,44 @@ describe 'Bills API' do
       expect(json_response['message']).to eq "Couldn't update bill. Check the errors [\"Name can't be blank\"]"
     end
   end
+
+  context 'GET /companies/:company_id/bills' do
+    it 'returns all bills for specific company for the current month' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+      first_company = user.companies.create(name: 'Casa')
+      second_company = user.companies.create(name: 'Academia')
+      first_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                                 payment_date: Time.zone.now - 1.month)
+      first_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+                                 payment_date: Time.zone.now)
+      second_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                                  payment_date: Time.zone.now)
+      second_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+                                  payment_date: Time.zone.now)
+      
+      get company_bills_path(first_company), headers: { Authorization: token }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 200
+      expect(json_response.length).to eq 1
+      expect(json_response[0]['name']).to eq 'Conta de agua'
+    end
+
+    it 'blocks user from seeing other user bills' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      second_user = User.create(name: 'Gabriel', email: 'test2@test.com', password: '123456')
+
+      token = login_as(second_user)
+      company = user.companies.create(name: 'Casa')
+
+      get company_bills_path(company), headers: { Authorization: token }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 401
+      expect(json_response['message']).to eq 'Permission denied.'
+    end
+  end
 end

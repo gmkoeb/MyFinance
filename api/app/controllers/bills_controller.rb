@@ -1,7 +1,12 @@
 class BillsController < ApplicationController
   before_action :authorize_user
-  before_action :set_company_and_check_user, only: %w[create]
+  before_action :set_company_and_check_user, only: %w[index create]
   before_action :set_bill_and_check_user, only: %w[update]
+
+  def index
+    bills = @company.bills.where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
+    render status: :ok, json: bills
+  end
 
   def create
     bill = @company.bills.build(bill_params)
