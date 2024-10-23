@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_23_141659) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_23_165306) do
   create_table "bills", force: :cascade do |t|
     t.string "name"
     t.string "billing_company"
     t.integer "value"
-    t.boolean "paid"
+    t.boolean "paid", default: false
     t.datetime "payment_date"
     t.integer "company_id", null: false
     t.datetime "created_at", null: false
