@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::API
   def authorize_user
-    return render_unauthorized unless request.headers['Authorization'].present?
+    return render_unauthorized if request.headers['Authorization'].blank?
 
-    begin 
+    begin
       user_id = JsonWebToken.decode(token)['user_id']
       @current_user = User.find(user_id)
     rescue JWT::DecodeError

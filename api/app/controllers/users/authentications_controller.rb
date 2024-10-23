@@ -8,9 +8,8 @@ module Users
         render json: { token: { code: token, exp: 24.hours.to_i },
                        user: { name: user.name } }, status: :ok
       else
-        render json: { error: 'Wrong password or email.'}, status: :unauthorized
+        render json: { error: 'Wrong password or email.' }, status: :unauthorized
       end
-
     end
 
     private
