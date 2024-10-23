@@ -82,4 +82,31 @@ describe 'Companies API' do
       expect(json_response['message']).to eq 'Permission denied.'
     end
   end
+
+  context 'GET /companies' do
+    it 'returns a list with all user companies in alphabetical order' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      user.companies.create(name: 'Casa')
+      user.companies.create(name: 'Academia')
+      user.companies.create(name: 'Empresa 1')
+
+      token = login_as(user)
+      get companies_path, headers: { Authorization: token }
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 200
+      expect(json_response.length).to eq 3
+      expect(json_response[0]['name']).to eq 'Academia'
+      expect(json_response[1]['name']).to eq 'Casa'
+      expect(json_response[2]['name']).to eq 'Empresa 1'
+    end
+
+    it 'user must be logged in to see his companies' do
+      get companies_path
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 401
+      expect(json_response['message']).to eq "Couldn't find an active session."
+    end
+  end
 end
