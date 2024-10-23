@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   describe '#password validations' do
     it 'password must match confirm password' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456',
+      user = User.new(name: 'Gabriel', email: 'test@test.com', password: '123456',
                          password_confirmation: '123456')
       user.password_confirmation = '450294'
       expect(user.valid?).to be false
     end
 
     it 'user is not authenticated if passwords dont match' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456',
+      user = User.new(name: 'Gabriel', email: 'test@test.com', password: '123456',
                          password_confirmation: '123456')
 
       result = user.authenticate('654321')
@@ -19,7 +19,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'user is authenticated if passwords match' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      user = User.new(name: 'Gabriel', email: 'test@test.com', password: '123456')
 
       result = user.authenticate('123456')
 
@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
 
     context 'format' do
       it 'email must have a valid format' do
-        user = User.create(name: 'Gabriel', email: 'testtest.com', password: '123456',
+        user = User.new(name: 'Gabriel', email: 'testtest.com', password: '123456',
                            password_confirmation: '123456')
 
         expect(user.valid?).to eq false
@@ -51,7 +51,7 @@ RSpec.describe User, type: :model do
 
     context 'length' do
       it 'password must have at least 6 characters' do
-        user = User.create(name: 'Gabriel', email: 'testtest.com', password: '12345',
+        user = User.new(name: 'Gabriel', email: 'testtest.com', password: '12345',
                            password_confirmation: '12345')
 
         expect(user.valid?).to eq false
@@ -59,7 +59,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'password must have a maximum of 20 characters' do
-        user = User.create(name: 'Gabriel', email: 'testtest.com', password: '1234512345123451234512345',
+        user = User.new(name: 'Gabriel', email: 'testtest.com', password: '1234512345123451234512345',
                            password_confirmation: '1234512345123451234512345')
 
         expect(user.valid?).to eq false
@@ -69,7 +69,7 @@ RSpec.describe User, type: :model do
 
     context 'presence' do
       it 'name cant be blank' do
-        user = User.create(name: '', email: 'test@test.com', password: '123456',
+        user = User.new(name: '', email: 'test@test.com', password: '123456',
                            password_confirmation: '123456')
 
         expect(user.valid?).to eq false
@@ -77,7 +77,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'name cant be blank' do
-        user = User.create(name: 'Test', email: '', password: '123456',
+        user = User.new(name: 'Test', email: '', password: '123456',
                            password_confirmation: '123456')
 
         expect(user.valid?).to eq false
@@ -85,7 +85,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'password cant be blank' do
-        user = User.create(name: 'Test', email: 'test@test.com', password: '',
+        user = User.new(name: 'Test', email: 'test@test.com', password: '',
                            password_confirmation: '123456')
 
         expect(user.valid?).to eq false
