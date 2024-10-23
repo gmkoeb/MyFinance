@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
   def authorize_user
-    return render_unauthorized if request.headers['Authorization'].blank?
+    token = request.headers['Authorization']
+    return render_unauthorized if token.blank?
 
     begin
       user_id = JsonWebToken.decode(token)['user_id']
@@ -12,11 +13,7 @@ class ApplicationController < ActionController::API
 
   private
 
-  def token
-    params.require(:token).permit(:code)
-  end
-
   def render_unauthorized
-    render json: { status: 401, message: "Couldn't find an active session." }, status: :unauthorized
+    render json: { message: "Couldn't find an active session." }, status: :unauthorized
   end
 end
