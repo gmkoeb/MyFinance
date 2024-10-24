@@ -20,6 +20,6 @@ describe 'User logs in' do
 
     json_response = JSON.parse(response.body)
     expect(response.status).to eq 401
-    expect(json_response['error']).to include 'Wrong password or email.'
+    expect(json_response['message']).to include 'Wrong password or email.'
   end
 end

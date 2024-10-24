@@ -13,7 +13,7 @@ interface ApiResponse {
 export default function SignUp(){
   const navigate = useNavigate()
   const initialValues = { name: '', email: '', password: '', password_confirmation: '' }
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<string[]>([])
 
   async function handleSubmit(values: any, setSubmitting: (isSubmitting: boolean) => void ){
     try{
@@ -21,7 +21,7 @@ export default function SignUp(){
       setSubmitting(false);
       navigate('/sign_in');
     } catch(error: any){
-      setErrors(error.response.data.error)
+      setErrors(error.response.data.message)
       setSubmitting(false);
     }
   }

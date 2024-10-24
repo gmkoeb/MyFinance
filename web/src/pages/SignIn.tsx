@@ -20,7 +20,7 @@ interface SignInProps {
 export default function SignIn({ setIsSignedIn }: SignInProps){
   const navigate = useNavigate()
   const initialValues = { email: '', password: '' }
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<string[]>([])
 
   async function handleSubmit(values: any, setSubmitting: (isSubmitting: boolean) => void ){
     try {
@@ -28,9 +28,11 @@ export default function SignIn({ setIsSignedIn }: SignInProps){
       Cookies.set('token', result.data.token.code)
       Cookies.set('currentUser', result.data.user.name)
       setIsSignedIn(true)
-      navigate('/');
+      setSubmitting(false);
+      navigate('/')
+      window.location.reload()
     } catch(error: any) {
-      setErrors(error.response.data.error)
+      setErrors(error.response.data.message)
       setSubmitting(false);
     }
   }

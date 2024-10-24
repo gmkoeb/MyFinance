@@ -14,7 +14,7 @@ class CompaniesController < ApplicationController
       render status: :created, json: { message: 'Company created with success' }
     else
       render status: :bad_request,
-             json: { message: "Couldn't create company. Check the errors #{company.errors.full_messages}" }
+             json: { message: company.errors.full_messages }
     end
   end
 

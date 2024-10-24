@@ -7,6 +7,6 @@ export const api = axios.create({
 
 if (Cookies.get('token')) {
   api.defaults.headers.common = {
-    'Authorization': `Bearer ${Cookies.get('token')}`
+    'Authorization': `${Cookies.get('token')}`
   }
 }
