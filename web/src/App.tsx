@@ -1,13 +1,18 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Layout from './Layout'
+import SignUp from './pages/SignUp'
+
 function App() {
-  return (
-    <>
-      <div>
-        <h1 className="bg-black text-red-500">
-          HAHAHAHA
-        </h1>
-      </div>
-    </>
-  )
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        { path: '/sign_up', element: <SignUp /> },
+    ],
+    }
+  ])
+  return (<RouterProvider router={router} />)
 }
 
 export default App
