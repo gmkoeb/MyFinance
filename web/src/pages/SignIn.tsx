@@ -30,9 +30,5 @@ export default function SignIn(){
     }
   }
 
-  return (
-    <div>
-      <AccountForm initialValues={initialValues} submit={handleSubmit} isSignIn={true} apiErrors={errors} />
-    </div>
-  )
+  return <AccountForm initialValues={initialValues} submit={handleSubmit} isSignIn={true} apiErrors={errors} />
 }
