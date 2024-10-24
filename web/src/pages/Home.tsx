@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { api } from "../../api/axios";
-import { Form, ErrorMessage, Field, Formik } from "formik";
+import { FormikHelpers } from "formik";
+import CompanyForm from "../components/CompanyForm";
 
 interface HomeProps {
   isSignedIn: boolean
@@ -12,16 +13,12 @@ interface Company{
   name: string
 }
 
-interface CompanyFormValues{
-  name: string
-}
-
 export default function Home({ isSignedIn }: HomeProps){
   const [companies, setCompanies] = useState<Company[]>([]);
   const [showCompanyForm, setShowCompanyForm] = useState<boolean>(false)
-  const [companyErrors, setCompanyErrors] = useState<string[]>([])
-
-  function handleCompanyForm(){
+  const [errors, setCompanyErrors] = useState<string[]>([])
+  
+  function handleShowCompanyForm(){
     if(showCompanyForm){
       setShowCompanyForm(false)
     }else{
@@ -34,7 +31,7 @@ export default function Home({ isSignedIn }: HomeProps){
     setCompanies(result.data)
   }
 
-  async function handleCompanyCreation(values: any, actions: any ){
+  async function handleCompanyCreation(values: {name: string}, actions: FormikHelpers<{ name: string }> ){
     try {
       const companyData = { company: {
         name: values.name
@@ -59,38 +56,10 @@ export default function Home({ isSignedIn }: HomeProps){
     <div>
         {isSignedIn ? (
           <>
-            <h3 onClick={handleCompanyForm}>Cadastrar Empresa +</h3>
+            <h3 onClick={handleShowCompanyForm}>Cadastrar Empresa +</h3>
             {showCompanyForm && (
               <>
-                <Formik
-                  initialValues={{ name: '' }}
-                  validate={(values) => {
-                    const errors: Partial<CompanyFormValues> = {}
-                    if (!values.name) {
-                      errors.name = "Campo obrigatório";
-                    }
-                    return errors
-                  }} 
-                  onSubmit={(values, actions) => {
-                    handleCompanyCreation(values, actions)
-                  }}
-                  >
-                  <Form>
-                    <label htmlFor="name">Nome</label>
-                    <Field id="name" name="name" placeholder="Nome da empresa"/>
-                    <ErrorMessage name="name" component={'div'}></ErrorMessage>
-                    <button type="submit">Enviar</button>
-                    {companyErrors &&
-                      (
-                        <div>
-                          {companyErrors.map(error => (
-                            <p key={error}>{error}</p>
-                          ))}
-                        </div>
-                      )
-                    }
-                  </Form>
-                </Formik>
+                <CompanyForm errors={errors} handleSubmit={handleCompanyCreation} />
               </>
             )}
             {companies.length > 0 &&
