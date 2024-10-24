@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 
-export default function Layout(){
+interface LayoutProps {
+  isSignedIn: boolean;
+}
+
+export default function Layout({ isSignedIn }: LayoutProps){
   return(
     <>
       <main>
-        <Header />
+        <Header isSignedIn={isSignedIn}/>
         <Outlet/>
       </main>
     </>

@@ -13,7 +13,11 @@ interface ApiResponse {
   }
 }
 
-export default function SignIn(){
+interface SignInProps {
+  setIsSignedIn: (isSignedIn: boolean) => void;
+}
+
+export default function SignIn({ setIsSignedIn }: SignInProps){
   const navigate = useNavigate()
   const initialValues = { email: '', password: '' }
   const [errors, setErrors] = useState([])
@@ -23,6 +27,7 @@ export default function SignIn(){
       const result = await api.post<ApiResponse>('/users/sign_in', values)
       Cookies.set('token', result.data.token.code)
       Cookies.set('currentUser', result.data.user.name)
+      setIsSignedIn(true)
       navigate('/');
     } catch(error: any) {
       setErrors(error.response.data.error)
