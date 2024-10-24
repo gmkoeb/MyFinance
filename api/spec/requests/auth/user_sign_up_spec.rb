@@ -19,7 +19,7 @@ describe 'User creates an account' do
     json_response = JSON.parse(response.body)
 
     expect(response.status).to eq 400
-    expect(json_response['user']).to include "Password confirmation doesn't match Password"
+    expect(json_response['error']).to include "Password confirmation doesn't match Password"
   end
 
   it 'with missing parameters' do
@@ -29,6 +29,6 @@ describe 'User creates an account' do
     json_response = JSON.parse(response.body)
 
     expect(response.status).to eq 400
-    expect(json_response['user']).to include "Name can't be blank"
+    expect(json_response['error']).to include "Name can't be blank"
   end
 end

@@ -5,7 +5,7 @@ module Users
 
       return render status: :created, json: { user: } if user.save
 
-      render status: :bad_request, json: { user: user.errors.full_messages }
+      render status: :bad_request, json: { error: user.errors.full_messages }
     end
 
     private
