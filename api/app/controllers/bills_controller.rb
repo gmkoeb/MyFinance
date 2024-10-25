@@ -14,7 +14,7 @@ class BillsController < ApplicationController
     return render status: :created, json: { message: 'Bill created with success' } if bill.save
 
     render status: :bad_request,
-           json: { message: "Couldn't create bill. Check the errors #{bill.errors.full_messages}" }
+           json: { message: bill.errors.full_messages }
   end
 
   def update

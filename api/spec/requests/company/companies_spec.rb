@@ -26,7 +26,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to eq "Couldn't create company. Check the errors [\"Name can't be blank\"]"
+      expect(json_response['message']).to include "Name can't be blank"
     end
 
     it 'cant create a company while not authenticated' do

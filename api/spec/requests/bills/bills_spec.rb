@@ -45,7 +45,8 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to eq "Couldn't create bill. Check the errors [\"Name can't be blank\", \"Billing company can't be blank\"]"
+      expect(json_response['message']).to include "Name can't be blank"
+      expect(json_response['message']).to include "Billing company can't be blank"
     end
   end
 
