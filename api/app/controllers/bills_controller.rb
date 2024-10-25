@@ -1,7 +1,7 @@
 class BillsController < ApplicationController
   before_action :authorize_user
   before_action :set_company_and_check_user, only: %w[index create]
-  before_action :set_bill_and_check_user, only: %w[update]
+  before_action :set_bill_and_check_user, only: %w[update destroy]
 
   def index
     bills = @company.bills.where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
@@ -24,6 +24,9 @@ class BillsController < ApplicationController
            json: { message: "Couldn't update bill. Check the errors #{@bill.errors.full_messages}" }
   end
 
+  def destroy
+    return render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
+  end
   private
 
   def set_company_and_check_user

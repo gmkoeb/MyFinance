@@ -140,4 +140,38 @@ describe 'Bills API' do
       expect(json_response['message']).to eq 'Permission denied.'
     end
   end
+
+  context 'DELETE /bills/:id' do
+    it 'user deletes a bill with success' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Casa')
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                                  payment_date: Time.zone.now - 1.month)
+      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+                                 payment_date: Time.zone.now)
+      
+      delete bill_path(bill), headers: { Authorization: token }
+
+      expect(response.status).to eq 200
+      expect(company.bills.length).to eq 1
+    end
+
+    it 'user cant delete another user bill' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      second_user = User.create(name: 'Gabriel', email: 'test2@test.com', password: '123456')
+
+      token = login_as(second_user)
+      company = user.companies.create(name: 'Casa')
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                                  payment_date: Time.zone.now - 1.month)
+
+      delete bill_path(bill), headers: { Authorization: token }
+
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 401
+      expect(json_response['message']).to eq 'Permission denied.'
+    end
+  end
 end

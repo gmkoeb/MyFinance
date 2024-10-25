@@ -4,12 +4,14 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
+import { HousePlus, Trash } from "lucide-react";
+import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 
 interface HomeProps {
   isSignedIn: boolean
 }
 
-interface Company{
+export interface Company{
   id: number,
   name: string
 }
@@ -53,6 +55,15 @@ export default function Home({ isSignedIn }: HomeProps){
     const bills = result.map(response => response.data);
     const flattenedBills = bills.flat();
     setBills(flattenedBills)
+  }
+
+  async function handleDeleteBill(billId: number){
+    try {
+      await api.delete(`/bills/${billId}`)
+      getBills(companies)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async function handleCompanyCreation(values: Omit<Company, 'id'>, actions: FormikHelpers<{ name: string }> ){
@@ -100,7 +111,12 @@ export default function Home({ isSignedIn }: HomeProps){
         {isSignedIn ? (
           <div>
             <div className="flex flex-col items-center mb-4">
-              <button className="border border-black p-1 bg-blue-500 text-white rounded-lg hover:opacity-80 duration-300 w-96" onClick={handleShowCompanyForm}>Cadastrar Empresa +</button>
+              <button 
+                className="text-xl items-center border border-black p-3 font-bold bg-blue-500 text-white rounded-full hover:opacity-80 duration-300 w-96 flex justify-center gap-3" 
+                onClick={handleShowCompanyForm}>
+                  <p>Cadastrar Empresa </p>
+                  <HousePlus width={26} height={26} />
+              </button>
               {showCompanyForm && (
                 <div className="mb-3 flex flex-col">
                   <CompanyForm errors={companyErrors} handleSubmit={handleCompanyCreation} />
@@ -129,7 +145,7 @@ export default function Home({ isSignedIn }: HomeProps){
                                     <th>Nome da conta</th>
                                     <th>Empresa cobradora</th>
                                     <th>Valor</th>
-                                    <th>Pago</th>
+                                    <th>Pagamento</th>
                                     <th>Data de pagamento</th>
                                   </tr>
                                 </thead>
@@ -139,12 +155,16 @@ export default function Home({ isSignedIn }: HomeProps){
                                       <td>{bill.name}</td>
                                       <td>{bill.billing_company}</td>
                                       <td>R$ {bill.value}</td>
-                                      <td>{bill.paid ? "Pago" : "Não Pago"}</td>
-                                      <td>{bill.payment_date?.toString()}</td>
+                                      <td>{bill.paid ? "Efetuado" : "Não Efetuado"}</td>
+                                      <td 
+                                        className="flex justify-between">{bill.payment_date ? new Date(bill.payment_date).toLocaleDateString('pt-BR') : 'N/A'} 
+                                        <Trash onClick={() => handleDeleteBill(bill.id)} color="red"/>
+                                      </td>
                                     </tr>
                                   ))}
                                 </tbody>
                               </table>
+                              <h4 className="text-center mx-auto bg-white border font-bold p-1">Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
                             </div>
                           }
                         </div>
@@ -157,7 +177,7 @@ export default function Home({ isSignedIn }: HomeProps){
           </div>
         ) : (
           <>
-            Boas vindas ao MinhasFinanças. <Link to='/sign_up'>Crie uma conta agora</Link> para começar a gerenciar suas despesas de forma fácil e prática.
+            <h2 className="text-center text-3xl">Boas vindas ao <span className="text-blue-500 font-bold">MinhasFinanças</span>.<br></br> <Link className="text-blue-500 underline" to='/sign_up'>Crie uma conta agora</Link> para começar a gerenciar suas despesas de forma fácil e prática.</h2>
           </>
         )
       }
