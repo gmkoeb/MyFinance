@@ -48,32 +48,37 @@ export default function AccountForm({ initialValues, submit, isSignIn, apiErrors
         }}
         
         > 
-          <Form>
+          <Form className="flex flex-col items-center bg-white w-fit p-5 rounded-lg border border-neutral-400 mx-auto justify-center">
+            {isSignIn ?(
+              <><h2 className="text-xl font-bold text-blue-500">Entrar</h2></>
+            ): (
+              <><h2 className="text-xl font-bold text-blue-500">Crie sua conta</h2></>
+            )}
             {!isSignIn && (
-              <div>
-                <label htmlFor="name">Nome</label>
-                <Field id="name" name="name" type="text" placeholder="Digite seu nome"></Field>
-                <ErrorMessage name="name" component={'div'}></ErrorMessage>
+              <div className="flex flex-col">
+                <label className="font-semibold" htmlFor="name">Nome</label>
+                <Field className="w-96 rounded-md p-1 border border-black" id="name" name="name" type="text" placeholder="Digite seu nome"></Field>
+                <ErrorMessage className="text-red-500" name="name" component={'div'}></ErrorMessage>
               </div>
             )}
-            <div>
-              <label htmlFor="email">Email</label>
-              <Field id="email" name="email" type="email" placeholder="Digite seu email"></Field>
-              <ErrorMessage name="email" component={'div'}></ErrorMessage>
-            </div>
-            <div>
-              <label htmlFor="password">Senha</label>
-              <Field id="password" name="password" type="password" placeholder="Digite sua senha"></Field>
-              <ErrorMessage name="password" component={'div'}></ErrorMessage>
+            <div className="flex flex-col">
+              <label className="font-semibold" htmlFor="email">Email</label>
+              <Field className="w-96 rounded-md p-1 border border-black" id="email" name="email" type="email" placeholder="Digite seu email"></Field>
+              <ErrorMessage className="text-red-500" name="email" component={'div'}></ErrorMessage>
+            </div>  
+            <div className="flex flex-col">
+              <label className="font-semibold" htmlFor="password">Senha</label>
+              <Field className="w-96 rounded-md p-1 border border-black" id="password" name="password" type="password" placeholder="Digite sua senha"></Field>
+              <ErrorMessage className="text-red-500" name="password" component={'div'}></ErrorMessage>
             </div>
               {!isSignIn && (
-                <div>
-                  <label htmlFor="password_confirmation">Confirmar Senha</label>
-                  <Field id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirmar Senha"></Field>
-                  <ErrorMessage name="password_confirmation" component={'div'}></ErrorMessage>
+                <div className="flex flex-col">
+                  <label className="font-semibold" htmlFor="password_confirmation">Confirmar Senha</label>
+                  <Field className="w-96 rounded-md p-1 border border-black" id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirmar Senha"></Field>
+                  <ErrorMessage className="text-red-500" name="password_confirmation" component={'div'}></ErrorMessage>
                 </div>
               )}
-            <button type="submit">Enviar</button>
+            <button className="mt-6 border bg-blue-500 rounded-lg p-1 px-4 text-white hover:opacity-80 duration-300" type="submit">Enviar</button>
             {apiErrors.length > 0 &&
               <div className="flex flex-col">
                 {apiErrors.map(error => (

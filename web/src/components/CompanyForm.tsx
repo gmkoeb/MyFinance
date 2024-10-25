@@ -24,11 +24,11 @@ export default function CompanyForm({ handleSubmit, errors }: CompanyFormProps){
         handleSubmit(values, actions)
       }}
       >
-      <Form>
-        <label htmlFor="name">Nome</label>
-        <Field id="name" name="name" placeholder="Nome da empresa"/>
-        <ErrorMessage name="name" component={'div'}></ErrorMessage>
-        <button type="submit">Enviar</button>
+      <Form className="flex flex-col">
+        <label className="font-semibold" htmlFor="name">Nome</label>
+        <Field className="w-96 p-1 rounded" id="name" name="name" placeholder="Nome da empresa"/>
+        <ErrorMessage className="text-red-500" name="name" component={'div'}></ErrorMessage>
+        <button className="w-32 bg-green-500 rounded-md text-white mt-2" type="submit">Cadastrar</button>
         {errors &&
           (
             <div>

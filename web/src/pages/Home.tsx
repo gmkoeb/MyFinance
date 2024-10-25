@@ -17,9 +17,10 @@ interface Company{
 export interface Bill{
   id: number,
   name: string | undefined,
+  billName: string | undefined,
   billing_company: string | undefined,
   company_id: number | undefined,
-  value: number | undefined,
+  value: number | string | undefined,
   paid: boolean | undefined,
   payment_date: Date | undefined
 }
@@ -30,6 +31,8 @@ export default function Home({ isSignedIn }: HomeProps){
   const [companyErrors, setCompanyErrors] = useState<string[]>([])
   const [bills, setBills] = useState<Bill[]>([])
   const [billErrors, setBillErrors] = useState<string[]>([])
+  const date = new Date()
+  const monthNamePt = date.toLocaleString('pt-BR', { month: 'long' });
 
   function handleShowCompanyForm(){
     if(showCompanyForm){
@@ -70,9 +73,10 @@ export default function Home({ isSignedIn }: HomeProps){
   async function handleBillCreation(company_id: number, values: Partial<Bill>, actions: FormikHelpers<Partial<Bill>>){
     try{
       const billData = { bill: {
-        name: values.name,
+        name: values.billName,
         billing_company: values.billing_company,
         value: values.value,
+        paid: values.paid,
         payment_date: new Date()
       }}
       await api.post(`/companies/${company_id}/bills`, billData)
@@ -94,39 +98,63 @@ export default function Home({ isSignedIn }: HomeProps){
   return(
     <div>
         {isSignedIn ? (
-          <>
-            <h3 onClick={handleShowCompanyForm}>Cadastrar Empresa +</h3>
-            {showCompanyForm && (
-              <>
-                <CompanyForm errors={companyErrors} handleSubmit={handleCompanyCreation} />
-              </>
-            )}
-            {companies.length > 0 &&
-              <div>
-                {companies.map(company => (
-                  <div key={company.id}>
-                    <p>{company.name}</p>
-                    <BillForm errors={billErrors} handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)}/>
-                    <div>
-                      {bills.length > 0 && 
+          <div>
+            <div className="flex flex-col items-center mb-4">
+              <button className="border border-black p-1 bg-blue-500 text-white rounded-lg hover:opacity-80 duration-300 w-96" onClick={handleShowCompanyForm}>Cadastrar Empresa +</button>
+              {showCompanyForm && (
+                <div className="mb-3 flex flex-col">
+                  <CompanyForm errors={companyErrors} handleSubmit={handleCompanyCreation} />
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col items-center border-t border-neutral-400">
+              {companies.length > 0 &&
+                <div>
+                  <h2 className="text-4xl font-bold text-center mb-10">Empresas</h2>
+                  <div className="flex flex-col">
+                    {companies.map(company => (
+                      <div key={company.id} className="border border-black rounded mb-10 p-4">
+                        <h3 className="text-3xl italic font-semibold text-neutral-600 text-center">{company.name}</h3>
                         <div>
-                          {bills.filter(bill => bill.company_id === company.id).map(bill => (
-                            <div key={bill.id}>
-                              <p>{bill.name}</p>
-                              <p>{bill.billing_company}</p>
-                              <p>{bill.value}</p>
-                              <p>{bill.paid}</p>
-                              <p>{bill.payment_date?.toString()}</p>
-                            </div>
-                          ))}
+                          <h3 className="text-2xl text-blue-500 font-bold">Cadastrar Conta</h3>
+                          <BillForm company_id={company.id} errors={billErrors} handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)}/>
                         </div>
-                      }
-                    </div>
+                        <div>
+                          {bills.filter(bill => bill.company_id === company.id).length > 0 && 
+                            <div>
+                              <h3 className="capitalize text-xl font-bold mt-4">{monthNamePt}</h3>
+                              <table className="mx-auto table-container w-full">
+                                <thead>
+                                  <tr>
+                                    <th>Nome da conta</th>
+                                    <th>Empresa cobradora</th>
+                                    <th>Valor</th>
+                                    <th>Pago</th>
+                                    <th>Data de pagamento</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {bills.filter(bill => bill.company_id === company.id).map(bill => (
+                                    <tr key={bill.id} className={bill.paid ? "bg-white" : "bg-neutral-300"}>
+                                      <td>{bill.name}</td>
+                                      <td>{bill.billing_company}</td>
+                                      <td>R$ {bill.value}</td>
+                                      <td>{bill.paid ? "Pago" : "Não Pago"}</td>
+                                      <td>{bill.payment_date?.toString()}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            }
-          </>
+                </div>
+              }
+            </div>
+          </div>
         ) : (
           <>
             Boas vindas ao MinhasFinanças. <Link to='/sign_up'>Crie uma conta agora</Link> para começar a gerenciar suas despesas de forma fácil e prática.
