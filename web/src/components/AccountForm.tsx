@@ -48,7 +48,7 @@ export default function AccountForm({ initialValues, submit, isSignIn, apiErrors
         }}
         
         > 
-          <Form className="flex flex-col items-center bg-white w-fit p-5 rounded-lg border border-neutral-400 mx-auto justify-center">
+          <Form className="flex flex-col items-center bg-white w-fit p-5 rounded-lg border border-neutral-400 mx-auto justify-center gap-4">
             {isSignIn ?(
               <><h2 className="text-xl font-bold text-blue-500">Entrar</h2></>
             ): (
@@ -78,7 +78,7 @@ export default function AccountForm({ initialValues, submit, isSignIn, apiErrors
                   <ErrorMessage className="text-red-500" name="password_confirmation" component={'div'}></ErrorMessage>
                 </div>
               )}
-            <button className="mt-6 border bg-blue-500 rounded-lg p-1 px-4 text-white hover:opacity-80 duration-300" type="submit">Enviar</button>
+            <button className="mt-2 border bg-blue-500 rounded-lg p-1 px-4 text-white hover:opacity-80 duration-300" type="submit">Enviar</button>
             {apiErrors.length > 0 &&
               <div className="flex flex-col">
                 {apiErrors.map(error => (
