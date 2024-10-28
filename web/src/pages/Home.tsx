@@ -4,7 +4,7 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
-import { HousePlus, Trash } from "lucide-react";
+import { CircleDollarSign, HousePlus, Trash } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 
 interface HomeProps {
@@ -129,10 +129,10 @@ export default function Home({ isSignedIn }: HomeProps){
                   <h2 className="text-4xl font-bold text-center mb-10">Empresas</h2>
                   <div className="flex flex-col">
                     {companies.map(company => (
-                      <div key={company.id} className="border border-black rounded mb-10 p-4">
+                      <div key={company.id} className="border border-black rounded mb-10 p-4 bg-neutral-100">
                         <h3 className="text-3xl italic font-semibold text-neutral-600 text-center">{company.name}</h3>
                         <div>
-                          <h3 className="text-2xl text-blue-500 font-bold">Cadastrar Conta</h3>
+                          <h3 className="text-2xl text-blue-600 font-bold gap-2">Cadastrar Conta</h3>
                           <BillForm company_id={company.id} errors={billErrors} handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)}/>
                         </div>
                         <div>
@@ -164,7 +164,7 @@ export default function Home({ isSignedIn }: HomeProps){
                                   ))}
                                 </tbody>
                               </table>
-                              <h4 className="text-center mx-auto bg-white border font-bold p-1">Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
+                              <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
                             </div>
                           }
                         </div>

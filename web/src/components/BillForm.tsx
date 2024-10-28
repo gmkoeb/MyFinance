@@ -47,24 +47,24 @@ export default function BillForm({company_id, handleSubmit, errors}: BillFormPro
       <Form className="flex gap-3">
         <div className="flex flex-col">
           <label htmlFor={`billName-${company_id}`}>Nome</label>
-          <Field className="rounded p-1" id={`billName-${company_id}`} name="billName" placeholder="Nome da conta"/>
+          <Field className="rounded p-1 border border-black" id={`billName-${company_id}`} name="billName" placeholder="Nome da conta"/>
           <ErrorMessage className="text-red-500" name="billName" component={'div'}></ErrorMessage>
         </div>
         <div className="flex flex-col">
           <label htmlFor={`billing_company-${company_id}`}>Empresa Cobradora</label>
-          <Field className="rounded p-1" id={`billing_company-${company_id}`} name="billing_company" placeholder="Nome do cobrador"/>
+          <Field className="rounded p-1 border border-black" id={`billing_company-${company_id}`} name="billing_company" placeholder="Nome do cobrador"/>
           <ErrorMessage className="text-red-500" name="billing_company" component={'div'}></ErrorMessage>
         </div>
         <div className="flex flex-col">
           <label htmlFor={`value-${company_id}`}>Valor da conta</label>
-          <Field className="rounded p-1" type="number" id={`value-${company_id}`} name="value" placeholder="R$" />
+          <Field className="rounded p-1 border border-black" type="number" id={`value-${company_id}`} name="value" placeholder="R$" />
           <ErrorMessage className="text-red-500" name="value" component={'div'}></ErrorMessage>
         </div>
         <div className="flex flex-col">
           <label htmlFor="date">Data de pagamento</label>
           <DatePicker
             name="date"
-            className="rounded p-1"
+            className="rounded p-1 border border-black"
             selected={values.payment_date}
             onChange={(date: Date | null) => setFieldValue("payment_date", date)}
           />
@@ -76,7 +76,7 @@ export default function BillForm({company_id, handleSubmit, errors}: BillFormPro
             className="h-4" id={`paid-${company_id}`} type="checkbox" 
             name="paid" />
         </div>
-        <button type="submit" className="w-20 rounded-lg h-8 text-center bg-blue-500 mt-5 text-white hover:opacity-80 duration-300">Criar</button>
+        <button type="submit" className="w-20 rounded-xl h-8 text-center bg-blue-500 mt-6 text-white hover:opacity-80 duration-300">Criar</button>
         {errors &&
           (
             <div>

@@ -29,8 +29,8 @@ export default function Header({ isSignedIn }: HeaderProps){
         <div>
           {isSignedIn ? (
             <div className="flex flex-col justify-center">
-              <h3 className="font-semibold text-blue-600">{userName}</h3>
-              <button className="border rounded-lg bg-red-500 text-white w-20 py-[3px] mx-auto hover:opacity-85 duration-300" onClick={handleLogout}>Sair</button>
+              <h3 className="font-semibold text-blue-600 text-xl">{userName}</h3>
+              <button className="border rounded-xl bg-red-500 text-white w-16 py-[1px] mx-auto hover:opacity-85 duration-300" onClick={handleLogout}>Sair</button>
             </div>
           ) : (
             <div className="flex gap-3">
