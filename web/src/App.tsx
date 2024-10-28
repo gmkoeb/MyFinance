@@ -5,6 +5,8 @@ import SignIn from './pages/SignIn'
 import Home from './pages/Home'
 import { useState } from 'react'
 import Cookies from 'js-cookie'
+import ProtectedRoutes from './ProtectedRoutes'
+import MyCompanies from './pages/MyCompanies'
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(Cookies.get('token') ? true : false)
@@ -17,6 +19,12 @@ function App() {
         { path: '/sign_up', element: <SignUp /> },
         { path: '/sign_in', element: <SignIn setIsSignedIn={setIsSignedIn}/> }
       ],
+    },
+    {
+      element: <ProtectedRoutes isSignedIn={isSignedIn}/>,
+      children: [
+        {path: '/my_companies', element: <MyCompanies />}
+      ]
     }
   ])
   return (<RouterProvider router={router} />)

@@ -9,9 +9,9 @@ class BillsController < ApplicationController
   end
 
   def history
-    unique_months = @company.bills.map(&:payment_date).map(&:month).uniq
-    months = unique_months.map { |month_number| I18n.t("date.month_names")[month_number] }
-    render status: :ok, json: { bills: @company.bills, months: }
+    unique_years = @company.bills.map(&:payment_date).map(&:year).uniq.sort.reverse
+    bills = format_bill_hash(unique_years)
+    render status: :ok, json: bills
   end
 
   def create
@@ -34,8 +34,6 @@ class BillsController < ApplicationController
     return render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
   end
   
-  
-
   private
 
   def set_company_and_check_user
@@ -50,5 +48,19 @@ class BillsController < ApplicationController
   def set_bill_and_check_user
     @bill = Bill.find(params[:id])
     render status: :unauthorized, json: { message: 'Permission denied.' } if @bill.company.user != @current_user
+  end
+
+  def format_bill_hash(years)
+    bill_hash = {}
+    years.each do |year|
+      bills = Bill.where("cast(strftime('%Y', payment_date) as int) = ?", year)
+      unique_months = bills.map(&:payment_date).map(&:month).uniq
+      months = unique_months.map { |month_number| I18n.t("date.month_names")[month_number] }
+      bill_hash[year] = {
+        months:,
+        bills: bills.as_json
+      }
+    end
+    bill_hash
   end
 end

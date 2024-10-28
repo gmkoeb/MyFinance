@@ -6,6 +6,7 @@ import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
 import { CircleDollarSign, HousePlus, Trash } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
+import BillTable from "../components/BillTable";
 
 interface HomeProps {
   isSignedIn: boolean
@@ -24,6 +25,7 @@ export interface Bill{
   company_id: number | undefined,
   value: number | string | undefined,
   paid: boolean | undefined,
+  month: string,
   payment_date: Date | undefined
 }
 
@@ -34,7 +36,6 @@ export default function Home({ isSignedIn }: HomeProps){
   const [bills, setBills] = useState<Bill[]>([])
   const [billErrors, setBillErrors] = useState<string[]>([])
   const date = new Date()
-  const monthNamePt = date.toLocaleString('pt-BR', { month: 'long' });
 
   function handleShowCompanyForm(){
     if(showCompanyForm){
@@ -136,9 +137,9 @@ export default function Home({ isSignedIn }: HomeProps){
                           <BillForm company_id={company.id} errors={billErrors} handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)}/>
                         </div>
                         <div>
+                          <h3 className="text-xl font-bold capitalize my-4">{new Date().toLocaleString('pt-BR', { month: 'long' })}</h3>
                           {bills.filter(bill => bill.company_id === company.id).length > 0 && 
                             <div>
-                              <h3 className="capitalize text-xl font-bold mt-4">{monthNamePt}</h3>
                               <table className="mx-auto table-container w-full">
                                 <thead>
                                   <tr>
@@ -149,20 +150,9 @@ export default function Home({ isSignedIn }: HomeProps){
                                     <th>Data de pagamento</th>
                                   </tr>
                                 </thead>
-                                <tbody>
-                                  {bills.filter(bill => bill.company_id === company.id).map(bill => (
-                                    <tr key={bill.id} className={bill.paid ? "bg-white" : "bg-neutral-300"}>
-                                      <td>{bill.name}</td>
-                                      <td>{bill.billing_company}</td>
-                                      <td>R$ {bill.value}</td>
-                                      <td>{bill.paid ? "Efetuado" : "Não Efetuado"}</td>
-                                      <td 
-                                        className="flex justify-between">{bill.payment_date ? new Date(bill.payment_date).toLocaleDateString('pt-BR') : 'N/A'} 
-                                        <Trash className="hover:cursor-pointer" onClick={() => handleDeleteBill(bill.id)} color="#ff1321"/>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
+                                {bills.filter(bill => bill.company_id === company.id).map(bill => (
+                                  <BillTable key={bill.id} bill={bill} handleDeleteBill={handleDeleteBill} isHome={true}/>
+                                ))}
                               </table>
                               <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
                             </div>

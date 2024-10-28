@@ -5,7 +5,7 @@ class Bill < ApplicationRecord
 
   def as_json(options = {})
     super(options).merge({
-      'month' => payment_date.month
+      'month' => I18n.t("date.month_names")[payment_date.month]
     })
   end
 end

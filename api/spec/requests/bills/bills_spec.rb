@@ -189,11 +189,10 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
-      expect(json_response.length).to eq 2
-      expect(json_response['bills']).to include past_bill.as_json
-      expect(json_response['bills']).to include present_bill.as_json
-      expect(json_response['months']).to include 'setembro'
-      expect(json_response['months']).to include 'outubro'
+      expect(json_response['2024']['bills']).to include past_bill.as_json
+      expect(json_response['2024']['bills']).to include present_bill.as_json
+      expect(json_response['2024']['months']).to include 'setembro'
+      expect(json_response['2024']['months']).to include 'outubro'
     end
   end
 end
