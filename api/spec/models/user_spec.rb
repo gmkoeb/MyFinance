@@ -35,7 +35,7 @@ RSpec.describe User, type: :model do
         second_user = User.new(name: 'Gabriel', email: 'test@test.com', password: '123456')
 
         expect(second_user.valid?).to eq false
-        expect(second_user.errors.full_messages).to include 'Email has already been taken'
+        expect(second_user.errors.full_messages).to include 'Email já está em uso'
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include 'Email is invalid'
+        expect(user.errors.full_messages).to include 'Email não é válido'
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '12345')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include 'Password is too short (minimum is 6 characters)'
+        expect(user.errors.full_messages).to include 'Senha é muito curta (mínimo: 6 caracteres)'
       end
 
       it 'password must have a maximum of 20 characters' do
@@ -63,7 +63,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '1234512345123451234512345')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include 'Password is too long (maximum is 20 characters)'
+        expect(user.errors.full_messages).to include 'Senha é muito longa (máximo: 20 caracteres)'
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Name can't be blank"
+        expect(user.errors.full_messages).to include "Nome não pode ficar em branco"
       end
 
       it 'name cant be blank' do
@@ -81,7 +81,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Email can't be blank"
+        expect(user.errors.full_messages).to include "Email não pode ficar em branco"
       end
 
       it 'password cant be blank' do
@@ -89,7 +89,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Password can't be blank"
+        expect(user.errors.full_messages).to include "Senha não pode ficar em branco"
       end
     end
   end

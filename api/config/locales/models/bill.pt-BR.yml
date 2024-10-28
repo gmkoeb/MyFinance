@@ -1,0 +1,12 @@
+pt-BR:
+  activerecord:
+    models:
+      bill: 'Conta'
+    attributes:
+      bill:
+        name: 'Nome da conta'
+        billing_company: 'Empresa cobradora'
+        value: 'Valor'
+        paid: 'Pago'
+        payment_date: 'Data de pagamento'
+        

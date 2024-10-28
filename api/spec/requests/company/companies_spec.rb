@@ -26,7 +26,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include "Name can't be blank"
+      expect(json_response['message']).to include "Nome não pode ficar em branco"
     end
 
     it 'cant create a company while not authenticated' do
@@ -65,7 +65,7 @@ describe 'Companies API' do
 
       expect(response.status).to eq 400
       expect(company.name).to eq 'Casa'
-      expect(json_response['message']).to eq "Couldn't update company. Check the errors [\"Name can't be blank\"]"
+      expect(json_response['message']).to eq "Couldn't update company. Check the errors [\"Nome não pode ficar em branco\"]"
     end
 
     it 'user can only update his own company' do

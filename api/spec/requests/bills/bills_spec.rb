@@ -45,8 +45,8 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include "Name can't be blank"
-      expect(json_response['message']).to include "Billing company can't be blank"
+      expect(json_response['message']).to include "Nome da conta não pode ficar em branco"
+      expect(json_response['message']).to include "Empresa cobradora não pode ficar em branco"
     end
   end
 
@@ -97,7 +97,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to eq "Couldn't update bill. Check the errors [\"Name can't be blank\"]"
+      expect(json_response['message']).to eq "Couldn't update bill. Check the errors [\"Nome da conta não pode ficar em branco\"]"
     end
   end
 
@@ -172,6 +172,28 @@ describe 'Bills API' do
 
       expect(response.status).to eq 401
       expect(json_response['message']).to eq 'Permission denied.'
+    end
+  end
+
+  context 'GET /companies/:company_id/bills_history' do
+    it 'returns all company bills' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Casa')
+      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                                       payment_date: Time.zone.now - 1.month)
+      present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+                                          payment_date: Time.zone.now)
+
+      get company_bills_history_path(company), headers: { Authorization: token }
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 200
+      expect(json_response.length).to eq 2
+      expect(json_response['bills']).to include past_bill.as_json
+      expect(json_response['bills']).to include present_bill.as_json
+      expect(json_response['months']).to include 'setembro'
+      expect(json_response['months']).to include 'outubro'
     end
   end
 end

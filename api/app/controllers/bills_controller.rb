@@ -1,11 +1,17 @@
 class BillsController < ApplicationController
   before_action :authorize_user
-  before_action :set_company_and_check_user, only: %w[index create]
+  before_action :set_company_and_check_user, only: %w[index create history]
   before_action :set_bill_and_check_user, only: %w[update destroy]
 
   def index
     bills = @company.bills.where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
     render status: :ok, json: bills
+  end
+
+  def history
+    unique_months = @company.bills.map(&:payment_date).map(&:month).uniq
+    months = unique_months.map { |month_number| I18n.t("date.month_names")[month_number] }
+    render status: :ok, json: { bills: @company.bills, months: }
   end
 
   def create
@@ -27,6 +33,9 @@ class BillsController < ApplicationController
   def destroy
     return render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
   end
+  
+  
+
   private
 
   def set_company_and_check_user

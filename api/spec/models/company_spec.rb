@@ -10,7 +10,7 @@ RSpec.describe Company, type: :model do
         company = user.companies.build(name: 'Test')
 
         expect(company.valid?).to eq false
-        expect(company.errors.full_messages).to include 'Name has already been taken'
+        expect(company.errors.full_messages).to include 'Nome já está em uso'
       end
 
       it 'name must be unique for each user (success)' do
@@ -30,7 +30,7 @@ RSpec.describe Company, type: :model do
         company = user.companies.build(name: '')
 
         expect(company.valid?).to eq false
-        expect(company.errors.full_messages).to include "Name can't be blank"
+        expect(company.errors.full_messages).to include "Nome não pode ficar em branco"
       end
     end
   end
