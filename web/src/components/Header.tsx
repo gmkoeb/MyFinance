@@ -23,7 +23,7 @@ export default function Header({ isSignedIn }: HeaderProps){
   }, [])
   
   return(
-    <header className="bg-neutral-100 py-5 border-b border-black px-4 mb-20">
+    <header className="bg-neutral-100 py-5 border-b border-neutral-400 px-4 mb-20">
       <nav className="flex justify-between">
         <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
         {isSignedIn && (
