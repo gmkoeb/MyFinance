@@ -35,9 +35,9 @@ class BillsController < ApplicationController
   end
 
   def destroy
-    return render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
+    render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
   end
-  
+
   private
 
   def set_company_and_check_user
@@ -56,6 +56,6 @@ class BillsController < ApplicationController
 
   def get_months(bills)
     unique_months = bills.map(&:payment_date).map(&:month).uniq.sort
-    unique_months.map { |month_number| I18n.t("date.month_names")[month_number] }
+    unique_months.map { |month_number| I18n.t('date.month_names')[month_number] }
   end
 end

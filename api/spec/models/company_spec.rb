@@ -30,7 +30,7 @@ RSpec.describe Company, type: :model do
         company = user.companies.build(name: '')
 
         expect(company.valid?).to eq false
-        expect(company.errors.full_messages).to include "Nome não pode ficar em branco"
+        expect(company.errors.full_messages).to include 'Nome não pode ficar em branco'
       end
     end
   end

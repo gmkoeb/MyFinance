@@ -26,7 +26,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include "Nome não pode ficar em branco"
+      expect(json_response['message']).to include 'Nome não pode ficar em branco'
     end
 
     it 'cant create a company while not authenticated' do

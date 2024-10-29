@@ -19,7 +19,7 @@ describe 'User creates an account' do
     json_response = JSON.parse(response.body)
 
     expect(response.status).to eq 400
-    expect(json_response['message']).to include "Confirmar senha não é igual a Senha"
+    expect(json_response['message']).to include 'Confirmar senha não é igual a Senha'
   end
 
   it 'with missing parameters' do
@@ -29,6 +29,6 @@ describe 'User creates an account' do
     json_response = JSON.parse(response.body)
 
     expect(response.status).to eq 400
-    expect(json_response['message']).to include "Nome não pode ficar em branco"
+    expect(json_response['message']).to include 'Nome não pode ficar em branco'
   end
 end

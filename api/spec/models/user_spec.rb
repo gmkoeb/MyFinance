@@ -73,7 +73,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Nome não pode ficar em branco"
+        expect(user.errors.full_messages).to include 'Nome não pode ficar em branco'
       end
 
       it 'name cant be blank' do
@@ -81,7 +81,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Email não pode ficar em branco"
+        expect(user.errors.full_messages).to include 'Email não pode ficar em branco'
       end
 
       it 'password cant be blank' do
@@ -89,7 +89,7 @@ RSpec.describe User, type: :model do
                         password_confirmation: '123456')
 
         expect(user.valid?).to eq false
-        expect(user.errors.full_messages).to include "Senha não pode ficar em branco"
+        expect(user.errors.full_messages).to include 'Senha não pode ficar em branco'
       end
     end
   end

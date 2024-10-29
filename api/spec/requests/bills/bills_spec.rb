@@ -40,13 +40,13 @@ describe 'Bills API' do
       token = login_as(user)
 
       post company_bills_path(company), headers: { Authorization: token },
-                                        params: { bill: { name: '', billing_company: '', value: 200, 
+                                        params: { bill: { name: '', billing_company: '', value: 200,
                                                           payment_date: Time.zone.now } }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include "Nome da conta não pode ficar em branco"
-      expect(json_response['message']).to include "Empresa cobradora não pode ficar em branco"
+      expect(json_response['message']).to include 'Nome da conta não pode ficar em branco'
+      expect(json_response['message']).to include 'Empresa cobradora não pode ficar em branco'
     end
   end
 
@@ -107,15 +107,15 @@ describe 'Bills API' do
       token = login_as(user)
       first_company = user.companies.create(name: 'Casa')
       second_company = user.companies.create(name: 'Academia')
-      first_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      first_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                  payment_date: Time.zone.now - 1.month)
-      first_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+      first_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                  payment_date: Time.zone.now)
-      second_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      second_company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                   payment_date: Time.zone.now)
-      second_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+      second_company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                   payment_date: Time.zone.now)
-      
+
       get company_bills_path(first_company), headers: { Authorization: token }
 
       json_response = JSON.parse(response.body)
@@ -146,11 +146,11 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                   payment_date: Time.zone.now - 1.month)
-      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
-                                 payment_date: Time.zone.now)
-      
+      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
+                           payment_date: Time.zone.now)
+
       delete bill_path(bill), headers: { Authorization: token }
 
       expect(response.status).to eq 200
@@ -163,7 +163,7 @@ describe 'Bills API' do
 
       token = login_as(second_user)
       company = user.companies.create(name: 'Casa')
-      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                   payment_date: Time.zone.now - 1.month)
 
       delete bill_path(bill), headers: { Authorization: token }
@@ -180,9 +180,9 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                        payment_date: Time.zone.now - 1.month)
-      present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+      present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                           payment_date: Time.zone.now)
 
       get company_bills_history_path(company, '2024'), headers: { Authorization: token }
@@ -201,9 +201,9 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                            payment_date: Time.zone.now - 1.month)
-      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                            payment_date: Time.zone.now)
 
       get company_bills_years_path(company), headers: { Authorization: token }
