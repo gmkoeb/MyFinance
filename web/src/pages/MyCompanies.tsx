@@ -4,6 +4,13 @@ import { api } from "../../api/axios";
 import BillTable from "../components/BillTable";
 import { CircleDollarSign } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
+import Chart from "react-google-charts";
+
+type BillEntry = [string, {}];
+type BillData = BillEntry[];
+type Stats = {
+  [key: string]: number;
+};
 
 export default function MyCompanies(){
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -13,6 +20,7 @@ export default function MyCompanies(){
   const [selectedYear, setSelectedYear] = useState<string>('default')
   const [months, setMonths] = useState<string[]>([])
   const [selectedCompany, setSelectedCompany] = useState<string>('')
+  const [billStats, setBillStats] = useState<BillData>([])
 
   async function getCompanies(){
     const result = await api.get('/companies')
@@ -31,10 +39,17 @@ export default function MyCompanies(){
     setMonths(result.data.months);
   }
 
+  async function getBillsStatistics(company_id: number){
+    const result = await api.get(`/companies/${company_id}/bills_statistics/${selectedYear}`)
+    const stats: Stats = result.data.stats
+    setBillStats(Object.entries(stats).map(([key, value]) => [key, { v: value, f: `R$ ${value.toLocaleString()}` }]));
+  }
+
   function handleCompanySelection(company_id: number){
     if(company_id === -1){
       setSelectedCompanyId(-1)
       setBills([])
+      setYears([])
     } else {
       setSelectedCompanyId(company_id)
       getBillsYears(company_id)
@@ -56,6 +71,7 @@ export default function MyCompanies(){
   useEffect(() => {
     if (selectedYear !== 'default'){
       getBillsHistory(selectedCompanyId)
+      getBillsStatistics(selectedCompanyId)
     } else (
       setBills([])
     )
@@ -94,16 +110,46 @@ export default function MyCompanies(){
           </div>
           <div>
             {selectedCompanyId && (
-              <>
-                <div className="flex flex-col items-center">
-                  <>
-                    {selectedYear !== 'default' &&
-                      <h3 className="text-2xl text-blue-500 font-bold">Histórico de {selectedYear} - <span className="italic">{selectedCompany}</span></h3>
-                    }
+            <>
+              <div className="flex flex-col items-center">
+                <>
+                  {selectedYear !== 'default' && (
+                      <>
+                        <h3 className="text-2xl text-blue-500 font-bold">
+                          Histórico de {selectedYear} - <span className="italic">{selectedCompany}</span>
+                        </h3>
+                        {(() => {
+                          const data = [
+                            ["Bill", "Value Spent"],
+                            ...billStats.map(entry => entry)
+                          ];
+                          const options = {
+                            title: "Despesas anuais",
+                            backgroundColor: '#E4E4E4',
+                            is3D: true
+                          };
+                          
+                          return (
+                            <div className="mx-auto w-1/2 bg-neutral-400">
+                              <Chart
+                                chartType="PieChart"
+                                data={data}
+                                options={options}
+                                width={"100%"}
+                                height={"400px"}
+                                legendToggle
+                              />
+                            </div>
+                          );
+                        })()}
+                      </>
+                    )}
                     {months.map(month  => {
                       const monthlyBills = bills.filter(bill => bill.month === month)
+                      
                       return monthlyBills.length > 0 ? (
                         <div key={month}>
+                          
                           <h2 className="capitalize font-bold">{month}</h2>
                             <div>
                               <table className="mx-auto table-container w-full">

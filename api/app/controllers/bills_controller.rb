@@ -1,8 +1,9 @@
 class BillsController < ApplicationController
   before_action :authorize_user
-  before_action :set_company_and_check_user, only: %w[index create history years]
+  before_action :set_company_and_check_user, only: %w[index create history years statistics]
   before_action :set_bill_and_check_user, only: %w[update destroy]
-
+  before_action :get_year_bills, only: %w[history statistics]
+  
   def index
     bills = @company.bills.where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
     render status: :ok, json: bills
@@ -13,9 +14,14 @@ class BillsController < ApplicationController
     render status: :ok, json: { years: unique_years }
   end
 
-  def history
-    bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
-    render status: :ok, json: { bills:, months: get_months(bills), company: @company.name }
+  def history 
+    render status: :ok, json: { bills: @bills, months: get_months(@bills), company: @company.name }
+  end
+
+  def statistics 
+    render status: :ok, json: { stats: @bills.group("LOWER(name)")
+                                       .pluck("LOWER(name) AS name, SUM(value) AS total_value")
+                                       .map { |name, total_value| [name.capitalize, total_value] }.to_h }
   end
 
   def create
@@ -57,5 +63,9 @@ class BillsController < ApplicationController
   def get_months(bills)
     unique_months = bills.map(&:payment_date).map(&:month).uniq.sort
     unique_months.map { |month_number| I18n.t('date.month_names')[month_number] }
+  end
+
+  def get_year_bills
+    @bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
   end
 end
