@@ -214,4 +214,29 @@ describe 'Bills API' do
       expect(json_response['years']).to include 2024
     end
   end
+
+  context 'GET /companies/:company_id/bills_years' do
+    it 'returns all company bills for specified year' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Casa')
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
+                           payment_date: Time.zone.now - 1.month)
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
+                           payment_date: Time.zone.now)
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
+                           payment_date: Time.zone.now - 1.year)
+      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
+                           payment_date: Time.zone.now)
+
+      get company_bills_statistics_path(company, '2024'), headers: { Authorization: token }
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 200
+      expect(json_response['stats']).to include 'Conta de luz'
+      expect(json_response['stats']).to include 'Conta de agua'
+      expect(json_response['stats']['Conta de agua']).to eq 100
+      expect(json_response['stats']['Conta de luz']).to eq 500
+    end
+  end
 end
