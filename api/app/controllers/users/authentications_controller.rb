@@ -8,7 +8,7 @@ module Users
         render json: { token: { code: token, exp: 24.hours.to_i },
                        user: { name: user.name } }, status: :ok
       else
-        render json: { message: ['Wrong password or email.'] }, status: :unauthorized
+        render json: { message: [I18n.t('auth.wrong_data')] }, status: :unauthorized
       end
     end
 
