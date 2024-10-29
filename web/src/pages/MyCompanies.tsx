@@ -12,6 +12,7 @@ export default function MyCompanies(){
   const [years, setYears] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<string>('default')
   const [months, setMonths] = useState<string[]>([])
+  const [selectedCompany, setSelectedCompany] = useState<string>('')
 
   async function getCompanies(){
     const result = await api.get('/companies')
@@ -25,6 +26,7 @@ export default function MyCompanies(){
 
   async function getBillsHistory(company_id: number){
     const result = await api.get(`/companies/${company_id}/bills_history/${selectedYear}`)
+    setSelectedCompany(result.data.company)
     setBills(result.data.bills);
     setMonths(result.data.months);
   }
@@ -54,7 +56,9 @@ export default function MyCompanies(){
   useEffect(() => {
     if (selectedYear !== 'default'){
       getBillsHistory(selectedCompanyId)
-    }
+    } else (
+      setBills([])
+    )
   }, [selectedYear])
 
   useEffect(() => {
@@ -94,7 +98,7 @@ export default function MyCompanies(){
                 <div className="flex flex-col items-center">
                   <>
                     {selectedYear !== 'default' &&
-                      <h3 className="text-2xl text-blue-500 font-bold">Histórico de {selectedYear}</h3>
+                      <h3 className="text-2xl text-blue-500 font-bold">Histórico de {selectedYear} - <span className="italic">{selectedCompany}</span></h3>
                     }
                     {months.map(month  => {
                       const monthlyBills = bills.filter(bill => bill.month === month)

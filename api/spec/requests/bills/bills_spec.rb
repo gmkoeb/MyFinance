@@ -193,6 +193,7 @@ describe 'Bills API' do
       expect(json_response['bills']).to include present_bill.as_json
       expect(json_response['months']).to include 'setembro'
       expect(json_response['months']).to include 'outubro'
+      expect(json_response['company']).to eq 'Casa'
     end
   end
 

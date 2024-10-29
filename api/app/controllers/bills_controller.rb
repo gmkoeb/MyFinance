@@ -15,7 +15,7 @@ class BillsController < ApplicationController
 
   def history
     bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
-    render status: :ok, json: { bills:, months: get_months(bills) }
+    render status: :ok, json: { bills:, months: get_months(bills), company: @company.name }
   end
 
   def create
