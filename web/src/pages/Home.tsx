@@ -35,7 +35,6 @@ export default function Home({ isSignedIn }: HomeProps){
   const [companyErrors, setCompanyErrors] = useState<string[]>([])
   const [bills, setBills] = useState<Bill[]>([])
   const [billErrors, setBillErrors] = useState<string[]>([])
-  const date = new Date()
 
   function handleShowCompanyForm(){
     if(showCompanyForm){

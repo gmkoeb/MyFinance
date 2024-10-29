@@ -175,8 +175,8 @@ describe 'Bills API' do
     end
   end
 
-  context 'GET /companies/:company_id/bills_history' do
-    it 'returns all company bills' do
+  context 'GET /companies/:company_id/bills_history/:year' do
+    it 'returns all company bills for specified year' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
@@ -185,14 +185,32 @@ describe 'Bills API' do
       present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
                                           payment_date: Time.zone.now)
 
-      get company_bills_history_path(company), headers: { Authorization: token }
+      get company_bills_history_path(company, '2024'), headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
-      expect(json_response['2024']['bills']).to include past_bill.as_json
-      expect(json_response['2024']['bills']).to include present_bill.as_json
-      expect(json_response['2024']['months']).to include 'setembro'
-      expect(json_response['2024']['months']).to include 'outubro'
+      expect(json_response['bills']).to include past_bill.as_json
+      expect(json_response['bills']).to include present_bill.as_json
+      expect(json_response['months']).to include 'setembro'
+      expect(json_response['months']).to include 'outubro'
+    end
+  end
+
+  context 'GET /companies/:company_id/bills_years' do
+    it 'returns all company bills for specified year' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Casa')
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+                           payment_date: Time.zone.now - 1.month)
+      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100, 
+                           payment_date: Time.zone.now)
+
+      get company_bills_years_path(company), headers: { Authorization: token }
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 200
+      expect(json_response['years']).to include 2024
     end
   end
 end
