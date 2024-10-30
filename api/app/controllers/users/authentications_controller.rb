@@ -1,5 +1,7 @@
 module Users
   class AuthenticationsController < ApplicationController
+    before_action :authorize_user, only: %w[validate_user]
+
     def sign_in
       user = User.find_by(email: authentication_params[:email])
 
@@ -11,7 +13,9 @@ module Users
         render json: { message: [I18n.t('auth.wrong_data')] }, status: :unauthorized
       end
     end
-
+    def validate_user
+      
+    end
     private
 
     def authentication_params

@@ -3,13 +3,33 @@ import Layout from './Layout'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Home from './pages/Home'
-import { useState } from 'react'
-import Cookies from 'js-cookie'
+import { useEffect, useState } from 'react'
 import ProtectedRoutes from './ProtectedRoutes'
 import MyCompanies from './pages/MyCompanies'
+import { api } from '../api/axios'
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(Cookies.get('token') ? true : false)
+  const [isSignedIn, setIsSignedIn] = useState(false)
+  const [loading, setLoading] = useState(true)
+  
+  async function checkTokenValidity(){
+    const response = await api.get('/users/validate_user')
+    if(response.status === 401){
+      return false
+    }
+
+    return true
+  }
+  useEffect(() => {
+    checkTokenValidity().then((valid) => {
+      setIsSignedIn(valid)
+      setLoading(false)
+    }).catch(() => {
+      setIsSignedIn(false)
+      setLoading(false)
+    })
+  }, [])
+
   const router = createBrowserRouter([
     {
       path: '/',
@@ -27,6 +47,11 @@ function App() {
       ]
     }
   ])
+
+  if (loading) {
+    return <p>Loading...</p>; 
+  }
+  
   return (<RouterProvider router={router} />)
 }
 
