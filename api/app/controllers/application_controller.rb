@@ -14,6 +14,6 @@ class ApplicationController < ActionController::API
   private
 
   def render_unauthorized
-    render json: { message: "Couldn't find an active session." }, status: :unauthorized
+    render json: { message: I18n.t('auth.invalid_session') }, status: :unauthorized
   end
 end

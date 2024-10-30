@@ -12,7 +12,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 201
-      expect(json_response['message']).to eq 'Company created with success'
+      expect(json_response['message']).to eq 'Empresa criada com sucesso'
       expect(company.user).to eq user
       expect(company.name).to eq 'Casa'
     end
@@ -35,7 +35,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq "Couldn't find an active session."
+      expect(json_response['message']).to eq "Não foi possível encontrar uma sessão ativa"
     end
   end
 
@@ -51,7 +51,7 @@ describe 'Companies API' do
       company.reload
       expect(response.status).to eq 200
       expect(company.name).to eq 'Academia'
-      expect(json_response['message']).to eq 'Company updated with success.'
+      expect(json_response['message']).to eq 'Empresa atualizada com sucesso'
     end
 
     it 'with invalid parameters' do
@@ -65,7 +65,7 @@ describe 'Companies API' do
 
       expect(response.status).to eq 400
       expect(company.name).to eq 'Casa'
-      expect(json_response['message']).to eq "Couldn't update company. Check the errors [\"Nome não pode ficar em branco\"]"
+      expect(json_response['message']).to include "Nome não pode ficar em branco"
     end
 
     it 'user can only update his own company' do
@@ -79,7 +79,7 @@ describe 'Companies API' do
 
       json_response = JSON.parse(response.body)
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq 'Permission denied.'
+      expect(json_response['message']).to eq 'Permissão negada'
     end
   end
 
@@ -106,7 +106,7 @@ describe 'Companies API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq "Couldn't find an active session."
+      expect(json_response['message']).to eq "Não foi possível encontrar uma sessão ativa"
     end
   end
 end

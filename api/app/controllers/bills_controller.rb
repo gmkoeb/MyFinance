@@ -27,28 +27,28 @@ class BillsController < ApplicationController
   def create
     bill = @company.bills.build(bill_params)
 
-    return render status: :created, json: { message: 'Bill created with success' } if bill.save
+    return render status: :created, json: { message: I18n.t('bill.crud.create_success') } if bill.save
 
     render status: :bad_request,
            json: { message: bill.errors.full_messages }
   end
 
   def update
-    return render status: :ok, json: { message: 'Bill updated with success' } if @bill.update(bill_params)
+    return render status: :ok, json: { message: I18n.t('bill.crud.update_success') } if @bill.update(bill_params)
 
     render status: :bad_request,
-           json: { message: "Couldn't update bill. Check the errors #{@bill.errors.full_messages}" }
+           json: { message: @bill.errors.full_messages }
   end
 
   def destroy
-    render status: :ok, json: { message: 'Bill deleted with success' } if @bill.destroy
+    render status: :ok, json: { message: I18n.t('bill.crud.delete') } if @bill.destroy
   end
 
   private
 
   def set_company_and_check_user
     @company = Company.find(params[:company_id])
-    render status: :unauthorized, json: { message: 'Permission denied.' } if @company.user != @current_user
+    render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @company.user != @current_user
   end
 
   def bill_params
@@ -57,7 +57,7 @@ class BillsController < ApplicationController
 
   def set_bill_and_check_user
     @bill = Bill.find(params[:id])
-    render status: :unauthorized, json: { message: 'Permission denied.' } if @bill.company.user != @current_user
+    render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @bill.company.user != @current_user
   end
 
   def get_months(bills)

@@ -11,7 +11,7 @@ class CompaniesController < ApplicationController
     company.user = @current_user
 
     if company.save
-      render status: :created, json: { message: 'Company created with success' }
+      render status: :created, json: { message: I18n.t('company.crud.create_success') }
     else
       render status: :bad_request,
              json: { message: company.errors.full_messages }
@@ -20,10 +20,10 @@ class CompaniesController < ApplicationController
 
   def update
     if @company.update(company_params)
-      render status: :ok, json: { message: 'Company updated with success.' }
+      render status: :ok, json: { message: I18n.t('company.crud.update_success') }
     else
       render status: :bad_request,
-             json: { message: "Couldn't update company. Check the errors #{@company.errors.full_messages}" }
+             json: { message: @company.errors.full_messages }
     end
   end
 
@@ -31,7 +31,7 @@ class CompaniesController < ApplicationController
 
   def find_company_and_check_user
     @company = Company.find(params[:id])
-    render status: :unauthorized, json: { message: 'Permission denied.' } if @company.user != @current_user
+    render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @company.user != @current_user
   end
 
   def company_params

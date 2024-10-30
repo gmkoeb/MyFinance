@@ -14,5 +14,3 @@ pt-BR:
       - Outubro
       - Novembro
       - Dezembro
-  auth:
-    wrong_data: Email ou senha incorretos

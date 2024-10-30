@@ -1,0 +1,5 @@
+pt-BR:
+  auth:
+    wrong_data: Email ou senha incorretos
+    wrong_user: Permissão negada
+    invalid_session: Não foi possível encontrar uma sessão ativa

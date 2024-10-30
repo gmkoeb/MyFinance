@@ -15,7 +15,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 201
-      expect(json_response['message']).to eq 'Bill created with success'
+      expect(json_response['message']).to eq 'Conta criada com sucesso'
       expect(bill.company.user).to eq user
       expect(bill.name).to eq 'Conta de luz'
       expect(bill.billing_company).to eq 'Enel'
@@ -31,7 +31,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq "Couldn't find an active session."
+      expect(json_response['message']).to eq "Não foi possível encontrar uma sessão ativa"
     end
 
     it 'doesnt create a bill with wrong parameters' do
@@ -64,7 +64,7 @@ describe 'Bills API' do
       bill.reload
 
       expect(response.status).to eq 200
-      expect(json_response['message']).to eq 'Bill updated with success'
+      expect(json_response['message']).to eq 'Conta atualizada com sucesso'
       expect(bill.name).to eq 'New Name'
       expect(bill.paid).to eq true
     end
@@ -81,7 +81,7 @@ describe 'Bills API' do
       patch bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
       bill.reload
       json_response = JSON.parse(response.body)
-      expect(json_response['message']).to eq 'Permission denied.'
+      expect(json_response['message']).to eq 'Permissão negada'
       expect(bill.name).to_not eq 'New Name'
     end
 
@@ -97,7 +97,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to eq "Couldn't update bill. Check the errors [\"Nome da conta não pode ficar em branco\"]"
+      expect(json_response['message']).to include "Nome da conta não pode ficar em branco"
     end
   end
 
@@ -137,7 +137,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq 'Permission denied.'
+      expect(json_response['message']).to eq 'Permissão negada'
     end
   end
 
@@ -152,9 +152,10 @@ describe 'Bills API' do
                            payment_date: Time.zone.now)
 
       delete bill_path(bill), headers: { Authorization: token }
-
+      json_response = JSON.parse(response.body)
       expect(response.status).to eq 200
       expect(company.bills.length).to eq 1
+      expect(json_response['message']).to eq 'Conta excluída com sucesso'
     end
 
     it 'user cant delete another user bill' do
@@ -171,7 +172,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq 'Permission denied.'
+      expect(json_response['message']).to eq 'Permissão negada'
     end
   end
 

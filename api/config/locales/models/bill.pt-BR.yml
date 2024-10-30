@@ -9,4 +9,8 @@ pt-BR:
         value: 'Valor'
         paid: 'Pago'
         payment_date: 'Data de pagamento'
-        
+  bill:
+    crud:
+      delete: 'Conta excluída com sucesso'
+      update_success: 'Conta atualizada com sucesso'
+      create_success: 'Conta criada com sucesso'

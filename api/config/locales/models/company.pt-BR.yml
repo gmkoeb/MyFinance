@@ -5,4 +5,7 @@ pt-BR:
     attributes:
       company:
         name: 'Nome'
-        
+  company:
+    crud:
+      update_success: 'Empresa atualizada com sucesso'
+      create_success: 'Empresa criada com sucesso'

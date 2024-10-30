@@ -152,7 +152,7 @@ export default function MyCompanies(){
                           
                           <h2 className="capitalize font-bold">{month}</h2>
                             <div>
-                              <table className="mx-auto table-container w-full">
+                              <table className="mx-auto table-container w-[50rem] max-md:w-[20rem]">
                                 <thead>
                                   <tr>
                                     <th>Nome da conta</th>
