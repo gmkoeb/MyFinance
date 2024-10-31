@@ -24,6 +24,29 @@ describe 'Bills API' do
       expect(bill.payment_date.day).to eq Time.zone.now.day
     end
 
+    it 'creates a recurrent bill with success' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+      company = user.companies.create(name: 'Casa')
+      token = login_as(user)
+
+      post company_bills_path(company), headers: { Authorization: token },
+                                        params: { bill: { name: 'Cartão de crédito', billing_company: 'Nubank', value: 200,
+                                                  paid: true, payment_date: Time.zone.now, recurrent: 12 } }
+
+      bill = Bill.first
+      json_response = JSON.parse(response.body)
+
+      expect(response.status).to eq 201
+      expect(Bill.all.length).to eq 12
+      expect(json_response['message']).to eq 'Conta criada com sucesso'
+      expect(bill.company.user).to eq user
+      expect(bill.name).to eq 'Cartão de crédito'
+      expect(bill.billing_company).to eq 'Nubank'
+      expect(bill.value).to eq 200
+      expect(bill.paid).to eq true
+      expect(bill.payment_date.day).to eq Time.zone.now.day
+    end
+
     it 'cant create a bill while not authenticated' do
       post company_bills_path(1), params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
                                                     paid: true, payment_date: Time.zone.now } }

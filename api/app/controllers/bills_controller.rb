@@ -52,7 +52,7 @@ class BillsController < ApplicationController
   end
 
   def bill_params
-    params.require(:bill).permit(:name, :billing_company, :value, :paid, :payment_date)
+    params.require(:bill).permit(:name, :billing_company, :value, :paid, :payment_date, :recurrent)
   end
 
   def set_bill_and_check_user

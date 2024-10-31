@@ -2,6 +2,7 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik"
 import { Bill } from "../pages/Home"
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import { useState } from "react";
 
 interface BillFormProps{
   company_id: number,
@@ -14,13 +15,17 @@ interface BillFormValues{
   billing_company?: string,
   value?: string,
   payment_date?: string,
-  paid?: boolean
+  paid?: boolean,
+  isRecurrentField?: boolean,
+  recurrent?: string
 }
 
 export default function BillForm({company_id, handleSubmit, errors}: BillFormProps){
+  const [isRecurrent, setIsRecurrent] = useState(false)
+
   return(
     <Formik
-      initialValues={{ billName: '', billing_company: '', value: '', paid: true, payment_date: new Date() }}
+      initialValues={{ billName: '', billing_company: '', value: '', paid: true, payment_date: new Date(), isRecurrentField: false, recurrent: '' }}
       validate={(values)=>{
         const errors: Partial<BillFormValues> = {}
 
@@ -34,6 +39,10 @@ export default function BillForm({company_id, handleSubmit, errors}: BillFormPro
 
         if (!values.value){
           errors.value = "Campo obrigatório"
+        }
+
+        if (isRecurrent && !values.recurrent ) {
+          errors.recurrent = "Campo obrigatório"
         }
 
         return errors
@@ -76,7 +85,25 @@ export default function BillForm({company_id, handleSubmit, errors}: BillFormPro
             className="h-4" id={`paid-${company_id}`} type="checkbox" 
             name="paid" />
         </div>
-        <button type="submit" className="w-20 rounded-xl h-8 text-center bg-blue-500 mt-6 text-white hover:opacity-80 duration-300">Criar</button>
+        <div className="flex justify-center align-middle">
+          <div className="flex flex-col">
+            <label className="mb-2" htmlFor={`isRecurrentField-${company_id}`}>Recorrente</label>
+            <Field 
+              checked={isRecurrent} 
+              onChange={() => isRecurrent ? setIsRecurrent(false) : setIsRecurrent(true)}
+              className="h-4" id={`isRecurrentField-${company_id}`} type="checkbox" 
+              name="isRecurrentField" />
+          </div>
+            {isRecurrent && 
+              <div>
+                <div className="mt-5">
+                  <Field className="rounded p-1 border border-black" type="number" id={`recurrent-${company_id}`} name="recurrent" placeholder="Número de vezes" />
+                  <ErrorMessage className="text-red-500" name="recurrent" component={'div'}></ErrorMessage>
+                </div>
+              </div>
+            }
+        </div>
+        <button type="submit" className="w-20 rounded-xl h-8 text-center bg-blue-500 mt-5 text-white hover:opacity-80 duration-300">Criar</button>
         {errors &&
           (
             <div>

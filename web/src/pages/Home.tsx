@@ -26,7 +26,8 @@ export interface Bill{
   value: number | string | undefined,
   paid: boolean | undefined,
   month: string,
-  payment_date: Date | undefined
+  payment_date: Date | undefined,
+  recurrent: number | string | undefined
 }
 
 export default function Home({ isSignedIn }: HomeProps){
@@ -35,7 +36,7 @@ export default function Home({ isSignedIn }: HomeProps){
   const [companyErrors, setCompanyErrors] = useState<string[]>([])
   const [bills, setBills] = useState<Bill[]>([])
   const [billErrors, setBillErrors] = useState<string[]>([])
-
+  
   function handleShowCompanyForm(){
     if(showCompanyForm){
       setShowCompanyForm(false)
@@ -88,7 +89,8 @@ export default function Home({ isSignedIn }: HomeProps){
         billing_company: values.billing_company,
         value: values.value,
         paid: values.paid,
-        payment_date: new Date()
+        payment_date: new Date(),
+        recurrent: values.recurrent
       }}
       await api.post(`/companies/${company_id}/bills`, billData)
       actions.setSubmitting(false)
