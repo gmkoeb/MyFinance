@@ -2,7 +2,7 @@ class BillsController < ApplicationController
   before_action :authorize_user
   before_action :set_company_and_check_user, only: %w[index create history years statistics]
   before_action :set_bill_and_check_user, only: %w[update destroy]
-  before_action :get_year_bills, only: %w[history statistics]
+  before_action :set_year_bills, only: %w[history statistics]
   
   def index
     bills = @company.bills.where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
@@ -15,7 +15,7 @@ class BillsController < ApplicationController
   end
 
   def history 
-    render status: :ok, json: { bills: @bills, months: get_months(@bills), company: @company.name }
+    render status: :ok, json: { bills: @bills, months: set_months(@bills), company: @company.name }
   end
 
   def statistics 
@@ -60,12 +60,12 @@ class BillsController < ApplicationController
     render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @bill.company.user != @current_user
   end
 
-  def get_months(bills)
+  def set_months(bills)
     unique_months = bills.map(&:payment_date).map(&:month).uniq.sort
     unique_months.map { |month_number| I18n.t('date.month_names')[month_number] }
   end
 
-  def get_year_bills
+  def set_year_bills
     @bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
   end
 end

@@ -31,7 +31,7 @@ describe 'Bills API' do
 
       post company_bills_path(company), headers: { Authorization: token },
                                         params: { bill: { name: 'Cartão de crédito', billing_company: 'Nubank', value: 200,
-                                                  paid: true, payment_date: Time.zone.now, recurrent: 12 } }
+                                                          paid: true, payment_date: Time.zone.now, recurrent: 12 } }
 
       bill = Bill.first
       json_response = JSON.parse(response.body)
@@ -54,7 +54,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401
-      expect(json_response['message']).to eq "Não foi possível encontrar uma sessão ativa"
+      expect(json_response['message']).to eq 'Não foi possível encontrar uma sessão ativa'
     end
 
     it 'doesnt create a bill with wrong parameters' do
@@ -120,7 +120,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include "Nome da conta não pode ficar em branco"
+      expect(json_response['message']).to include 'Nome da conta não pode ficar em branco'
     end
   end
 

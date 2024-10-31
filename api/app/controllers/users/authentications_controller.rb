@@ -13,9 +13,9 @@ module Users
         render json: { message: [I18n.t('auth.wrong_data')] }, status: :unauthorized
       end
     end
-    def validate_user
-      
-    end
+
+    def validate_user; end
+
     private
 
     def authentication_params
