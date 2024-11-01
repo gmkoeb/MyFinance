@@ -15,7 +15,7 @@ class BillsController < ApplicationController
   end
 
   def history 
-    render status: :ok, json: { bills: @bills, months: set_months(@bills), company: @company.name }
+    render status: :ok, json: { bills: @bills, months: months(@bills), company: @company.name }
   end
 
   def statistics 
@@ -60,7 +60,7 @@ class BillsController < ApplicationController
     render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @bill.company.user != @current_user
   end
 
-  def set_months(bills)
+  def months(bills)
     unique_months = bills.map(&:payment_date).map(&:month).uniq.sort
     unique_months.map { |month_number| I18n.t('date.month_names')[month_number] }
   end

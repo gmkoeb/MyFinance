@@ -24,9 +24,8 @@ class Bill < ApplicationRecord
   def handle_recurrent
     return unless recurrent
 
-    (recurrent - 1).times do |counter|
-      company.bills.create(name: name, billing_company: billing_company, value: value,
-                           paid: paid, payment_date: payment_date + (counter + 1).month)
+    recurrent.times do |counter|
+      BillCreationJob.set(wait: (2 + 2 * counter).seconds).perform_later(self, counter)
     end
   end
 end
