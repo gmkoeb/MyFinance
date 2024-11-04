@@ -26,7 +26,7 @@ class BillsController < ApplicationController
 
   def create
     bill = @company.bills.build(bill_params)
-
+    bill.type = 'Bill'
     return render status: :created, json: { message: I18n.t('bill.crud.create_success') } if bill.save
 
     render status: :bad_request,

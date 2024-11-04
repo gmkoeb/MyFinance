@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_31_175504) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_04_142550) do
   create_table "bills", force: :cascade do |t|
     t.string "name"
     t.string "billing_company"
@@ -21,6 +21,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_31_175504) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "recurrent"
+    t.integer "bill_id"
+    t.string "type"
     t.index ["company_id"], name: "index_bills_on_company_id"
   end
 

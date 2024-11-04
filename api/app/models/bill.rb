@@ -1,6 +1,8 @@
 class Bill < ApplicationRecord
   belongs_to :company
 
+  has_many :recurring_bills
+
   validates :name, :billing_company, :value, :payment_date, presence: true
 
   after_create :handle_recurrent
@@ -18,14 +20,15 @@ class Bill < ApplicationRecord
   def handle_recurrent_destroy
     return unless recurrent
 
-    company.bills.where(name: name).where(payment_date: payment_date..(payment_date + recurrent.month)).delete_all
+    RecurringBill.where(bill_id: id).delete_all
   end
 
   def handle_recurrent
     return unless recurrent
 
     recurrent.times do |counter|
-      BillCreationJob.set(wait: (2 + 2 * counter).seconds).perform_later(self, counter)
+      RecurringBill.create!(name:, billing_company:, value:, paid: false, bill_id: id, 
+                            company_id:, payment_date: payment_date + (counter + 1).month)
     end
   end
 end
