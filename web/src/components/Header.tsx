@@ -28,7 +28,7 @@ export default function Header({ isSignedIn }: HeaderProps){
         <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
         {isSignedIn && (
           <div className="flex items-center -ml-24">
-            <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/my_companies'>Minhas Empresas</NavLink>
+            <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/history'>Histórico</NavLink>
           </div>
         )}
         <div>

@@ -12,7 +12,7 @@ type Stats = {
   [key: string]: number;
 };
 
-export default function MyCompanies(){
+export default function History(){
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(-1)
   const [bills, setBills] = useState<Bill[]>([])
@@ -86,7 +86,7 @@ export default function MyCompanies(){
       {companies.length > 0 ? (
         <>
           <div className="flex justify-center items-center">
-            <h1 className="text-4xl text-center font-bold text-neutral-600 mb-4">Minhas Empresas</h1>
+            <h1 className="text-4xl text-center font-bold text-neutral-600 mb-4">Histórico</h1>
           </div>
           <div>
             <h2 className="text-4xl mx-28 mb-6 font-bold">Histórico</h2>

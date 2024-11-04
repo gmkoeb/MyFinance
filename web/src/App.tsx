@@ -5,7 +5,7 @@ import SignIn from './pages/SignIn'
 import Home from './pages/Home'
 import { useEffect, useState } from 'react'
 import ProtectedRoutes from './ProtectedRoutes'
-import MyCompanies from './pages/MyCompanies'
+import History from './pages/History'
 import { api } from '../api/axios'
 
 function App() {
@@ -43,7 +43,7 @@ function App() {
     {
       element: <ProtectedRoutes isSignedIn={isSignedIn}/>,
       children: [
-        {path: '/my_companies', element: <MyCompanies />}
+        {path: '/history', element: <History />}
       ]
     }
   ])
