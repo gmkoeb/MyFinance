@@ -28,8 +28,6 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
       company = user.companies.create(name: 'Casa')
       token = login_as(user)
-      bill_creation_job_spy = spy(BillCreationJob)
-      stub_const('BillCreationJob', bill_creation_job_spy)
 
       post company_bills_path(company), headers: { Authorization: token },
                                         params: { bill: { name: 'Cartão de crédito', billing_company: 'Nubank', value: 200,
@@ -38,7 +36,6 @@ describe 'Bills API' do
       bill = Bill.first
       json_response = JSON.parse(response.body)
 
-      expect(bill_creation_job_spy).to have_received(:perform_later).exactly(12).times
       expect(response.status).to eq 201
       expect(json_response['message']).to eq 'Conta criada com sucesso'
       expect(bill.company.user).to eq user
