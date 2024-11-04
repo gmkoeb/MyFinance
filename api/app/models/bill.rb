@@ -1,8 +1,6 @@
 class Bill < ApplicationRecord
   belongs_to :company
 
-  has_many :recurring_bills
-
   validates :name, :billing_company, :value, :payment_date, presence: true
 
   after_create :handle_recurrent
@@ -27,7 +25,7 @@ class Bill < ApplicationRecord
     return unless recurrent
 
     recurrent.times do |counter|
-      RecurringBill.create!(name:, billing_company:, value:, paid: false, bill_id: id, 
+      RecurringBill.create!(name:, billing_company:, value:, paid: false, bill_id: id,
                             company_id:, payment_date: payment_date + (counter + 1).month)
     end
   end
