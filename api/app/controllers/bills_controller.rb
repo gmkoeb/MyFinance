@@ -66,6 +66,14 @@ class BillsController < ApplicationController
   end
 
   def set_year_bills
-    @bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
+    query = params[:query]
+    
+    if query == 'paid'
+      @bills = @company.bills.paid.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
+    elsif query == 'unpaid'
+      @bills = @company.bills.unpaid.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
+    else
+      @bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
+    end
   end
 end

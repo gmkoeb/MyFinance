@@ -13,6 +13,13 @@ class Bill < ApplicationRecord
                          })
   end
 
+  def self.paid
+    Bill.where(paid: true)
+  end
+
+  def self.unpaid
+    Bill.where(paid: false)
+  end
   private
 
   def handle_recurrent_destroy

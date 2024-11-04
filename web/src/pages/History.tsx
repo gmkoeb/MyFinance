@@ -21,6 +21,7 @@ export default function History(){
   const [months, setMonths] = useState<string[]>([])
   const [selectedCompany, setSelectedCompany] = useState<string>('')
   const [billStats, setBillStats] = useState<BillData>([])
+  const [paymentStatus, setPaymentStatus] = useState<string>('all')
 
   async function getCompanies(){
     const result = await api.get('/companies')
@@ -33,14 +34,14 @@ export default function History(){
   }
 
   async function getBillsHistory(company_id: number){
-    const result = await api.get(`/companies/${company_id}/bills_history/${selectedYear}`)
+    const result = await api.get(`/companies/${company_id}/bills_history/${selectedYear}?query=${paymentStatus}`)
     setSelectedCompany(result.data.company)
     setBills(result.data.bills);
     setMonths(result.data.months);
   }
 
   async function getBillsStatistics(company_id: number){
-    const result = await api.get(`/companies/${company_id}/bills_statistics/${selectedYear}`)
+    const result = await api.get(`/companies/${company_id}/bills_statistics/${selectedYear}?query=${paymentStatus}`)
     const stats: Stats = result.data.stats
     setBillStats(Object.entries(stats).map(([key, value]) => [key, { v: value, f: `R$ ${value.toLocaleString()}` }]));
   }
@@ -75,7 +76,7 @@ export default function History(){
     } else (
       setBills([])
     )
-  }, [selectedYear])
+  }, [selectedYear, paymentStatus])
 
   useEffect(() => {
     getCompanies()
@@ -99,12 +100,21 @@ export default function History(){
                 ))}
               </select>
               <select value={selectedYear}
-                className="rounded-r-lg py-1 border-r-2 border-t-2 border-b-2 border-neutral-300 text-lg px-2" 
+                className="py-1 border-r border-t-2 border-b-2 border-neutral-300 text-lg font-bold px-2" 
                 onChange={(e) => handleYearSelection(e.target.value)}>
                 <option value="default">Escolha um ano</option>
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
+              </select>
+              <select 
+                className="rounded-r-lg py-1 border-r-2 border-t-2 border-b-2 border-neutral-300 text-lg px-2" 
+                value={paymentStatus}
+                onChange={(e) => setPaymentStatus(e.target.value)}
+                >
+                <option value="all">Todas</option>
+                <option value="paid">Pagas</option>
+                <option value="unpaid">Não Pagas</option>
               </select>
             </div>
           </div>
@@ -113,7 +123,7 @@ export default function History(){
             <>
               <div className="flex flex-col items-center">
                 <>
-                  {selectedYear !== 'default' && (
+                  {selectedYear !== 'default' && bills.length > 0 ? (
                       <>
                         <h3 className="text-2xl text-blue-500 font-bold">
                           Histórico de {selectedYear} - <span className="italic">{selectedCompany}</span>
@@ -125,8 +135,7 @@ export default function History(){
                           ];
                           const options = {
                             title: "Despesas anuais",
-                            backgroundColor: '#E4E4E4',
-                            is3D: true
+                            backgroundColor: '#E4E4E4'
                           };
                           
                           return (
@@ -143,7 +152,7 @@ export default function History(){
                           );
                         })()}
                       </>
-                    )}
+                    ) : selectedYear !== 'default' && (<h1>Nenhuma conta encontrada</h1>)}
                     {months.map(month  => {
                       const monthlyBills = bills.filter(bill => bill.month === month)
                       
