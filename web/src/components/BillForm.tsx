@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import { useState } from "react";
 
 interface BillFormProps{
+  setChange: React.Dispatch<React.SetStateAction<boolean>>,
   company_id: number,
   handleSubmit: (values: Partial<Bill>, actions: FormikHelpers<Partial<Bill>>) => void,
   errors: string[]
@@ -39,10 +40,6 @@ export default function BillForm({company_id, handleSubmit, errors}: BillFormPro
 
         if (!values.value){
           errors.value = "Campo obrigatório"
-        }
-
-        if (isRecurrent && !values.recurrent ) {
-          errors.recurrent = "Campo obrigatório"
         }
 
         return errors

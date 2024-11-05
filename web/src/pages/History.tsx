@@ -5,6 +5,7 @@ import BillTable from "../components/BillTable";
 import { CircleDollarSign } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 import Chart from "react-google-charts";
+import { handleDeleteBill } from "../lib/handleDeleteBill";
 
 type BillEntry = [string, {}];
 type BillData = BillEntry[];
@@ -22,6 +23,7 @@ export default function History(){
   const [selectedCompany, setSelectedCompany] = useState<string>('')
   const [billStats, setBillStats] = useState<BillData>([])
   const [paymentStatus, setPaymentStatus] = useState<string>('all')
+  const [change, setChange] = useState<boolean>(false)
 
   async function getCompanies(){
     const result = await api.get('/companies')
@@ -76,7 +78,7 @@ export default function History(){
     } else (
       setBills([])
     )
-  }, [selectedYear, paymentStatus])
+  }, [selectedYear, paymentStatus, change])
 
   useEffect(() => {
     getCompanies()
@@ -171,9 +173,11 @@ export default function History(){
                                     <th>Data de pagamento</th>
                                   </tr>
                                 </thead>
-                                {monthlyBills.map(bill => (
-                                  <BillTable key={bill.id} bill={bill} isHome={false}/>
-                                ))}
+                                <tbody>
+                                  {monthlyBills.map(bill => (
+                                    <BillTable setChange={setChange} key={bill.id} bill={bill} handleDeleteBill={() => handleDeleteBill(bill.id, setChange)}/>
+                                  ))}
+                                </tbody>
                               </table>
                               <h4 className="flex justify-center bg-white border font-bold py-1 gap-2 text-red-600 mb-5"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(monthlyBills)}</h4>
                             </div>

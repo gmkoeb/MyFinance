@@ -4,20 +4,21 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
-import { CircleDollarSign, HousePlus, Trash } from "lucide-react";
+import { CircleDollarSign, HousePlus } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 import BillTable from "../components/BillTable";
+import { handleDeleteBill } from "../lib/handleDeleteBill";
 
 interface HomeProps {
   isSignedIn: boolean
 }
 
-export interface Company{
+export interface Company {
   id: number,
   name: string
 }
 
-export interface Bill{
+export interface Bill {
   id: number,
   name: string | undefined,
   billName: string | undefined,
@@ -36,7 +37,8 @@ export default function Home({ isSignedIn }: HomeProps){
   const [companyErrors, setCompanyErrors] = useState<string[]>([])
   const [bills, setBills] = useState<Bill[]>([])
   const [billErrors, setBillErrors] = useState<string[]>([])
-  
+  const [change, setChange] = useState<boolean>(false)
+
   function handleShowCompanyForm(){
     if(showCompanyForm){
       setShowCompanyForm(false)
@@ -58,23 +60,15 @@ export default function Home({ isSignedIn }: HomeProps){
     setBills(flattenedBills)
   }
 
-  async function handleDeleteBill(billId: number){
-    try {
-      await api.delete(`/bills/${billId}`)
-      getBills(companies)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   async function handleCompanyCreation(values: Omit<Company, 'id'>, actions: FormikHelpers<{ name: string }> ){
     try {
-      const companyData = { company: {
-        name: values.name
+      const companyData = { 
+        company: {
+          name: values.name
       }}
       await api.post('/companies', companyData)
       actions.setSubmitting(false);
-      getCompanies()
+      setChange(true)
       actions.resetForm()
     } catch(error: any){
       actions.setSubmitting(false);
@@ -84,17 +78,18 @@ export default function Home({ isSignedIn }: HomeProps){
 
   async function handleBillCreation(company_id: number, values: Partial<Bill>, actions: FormikHelpers<Partial<Bill>>){
     try{
-      const billData = { bill: {
-        name: values.billName,
-        billing_company: values.billing_company,
-        value: values.value,
-        paid: values.paid,
-        payment_date: new Date(),
-        recurrent: values.recurrent
+      const billData = { 
+        bill: {
+          name: values.billName,
+          billing_company: values.billing_company,
+          value: values.value,
+          paid: values.paid,
+          payment_date: values.payment_date,
+          recurrent: values.recurrent
       }}
       await api.post(`/companies/${company_id}/bills`, billData)
       actions.setSubmitting(false)
-      getBills(companies)
+      setChange(true)
       actions.resetForm()
     } catch(error: any){
       actions.setSubmitting(false)
@@ -106,7 +101,8 @@ export default function Home({ isSignedIn }: HomeProps){
       if (isSignedIn) {
         getCompanies();
       }
-  }, []); 
+      setChange(false)
+  }, [change]); 
   
   return(
     <div>
@@ -151,9 +147,11 @@ export default function Home({ isSignedIn }: HomeProps){
                                     <th>Data de pagamento</th>
                                   </tr>
                                 </thead>
-                                {bills.filter(bill => bill.company_id === company.id).map(bill => (
-                                  <BillTable key={bill.id} bill={bill} handleDeleteBill={handleDeleteBill} isHome={true}/>
-                                ))}
+                                <tbody>
+                                  {bills.filter(bill => bill.company_id === company.id).map(bill => (
+                                    <BillTable setChange={setChange} key={bill.id} bill={bill} handleDeleteBill={() => handleDeleteBill(bill.id, setChange)} />
+                                  ))}
+                                </tbody>
                               </table>
                               <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
                             </div>
