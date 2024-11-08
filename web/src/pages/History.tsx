@@ -159,7 +159,7 @@ export default function History(){
                       const monthlyBills = bills.filter(bill => bill.month === month)
                       
                       return monthlyBills.length > 0 ? (
-                        <div key={month}>
+                        <div className="mb-10" key={month}>
                           
                           <h2 className="capitalize font-bold">{month}</h2>
                             <div>

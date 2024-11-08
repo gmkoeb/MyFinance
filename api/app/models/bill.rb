@@ -20,6 +20,7 @@ class Bill < ApplicationRecord
   def self.unpaid
     Bill.where(paid: false)
   end
+
   private
 
   def handle_recurrent_destroy

@@ -48,7 +48,7 @@ export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, 
       }}
     >
     {({ setFieldValue, values }) => (
-      <Form className="flex gap-3">
+      <Form className="flex gap-3 edit-bill-form">
         <div className="flex flex-col">
           <label htmlFor={`billName-${bill_id}`}>Nome</label>
           <Field className="rounded p-1 border border-black" id={`billName-${bill_id}`} name="billName" placeholder="Nome da conta"/>

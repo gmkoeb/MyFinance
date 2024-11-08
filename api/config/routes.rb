@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get '/users/validate_user', to: 'users/authentications#validate_user', controller: 'users/authentications'
 
   resources :companies do
+    resources :monthly_bills, only: %w[index create]
+    post '/create_bill', to: 'monthly_bills#create_bill', controller: 'monthly_bills'
     resources :bills, only: %w[index create]
     get '/bills_history/:year', to: 'bills#history', controller: 'bills', as: 'bills_history'
     get '/bills_statistics/:year', to: 'bills#statistics', controller: 'bills', as: 'bills_statistics'

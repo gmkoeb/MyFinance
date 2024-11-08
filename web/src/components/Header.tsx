@@ -25,12 +25,15 @@ export default function Header({ isSignedIn }: HeaderProps){
   return(
     <header className="bg-neutral-100 py-5 border-b border-neutral-400 px-4 mb-20">
       <nav className="flex justify-between">
-        <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
-        {isSignedIn && (
-          <div className="flex items-center -ml-24">
-            <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/history'>Histórico</NavLink>
-          </div>
-        )}
+        <div className="flex items-center gap-10">
+          <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
+          {isSignedIn && (
+            <div className="mt-2">
+              <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300 mx-10'} to='/monthly'>Mensalidades</NavLink>
+              <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/history'>Histórico</NavLink>
+            </div>
+          )}
+        </div>
         <div>
           {isSignedIn ? (
             <div className="flex items-center gap-20">

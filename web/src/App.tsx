@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import ProtectedRoutes from './ProtectedRoutes'
 import History from './pages/History'
 import { api } from '../api/axios'
+import Monthly from './pages/Monthly'
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
@@ -43,7 +44,8 @@ function App() {
     {
       element: <ProtectedRoutes isSignedIn={isSignedIn}/>,
       children: [
-        {path: '/history', element: <History />}
+        {path: '/history', element: <History />},
+        {path: '/monthly', element: <Monthly />}
       ]
     }
   ])

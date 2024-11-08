@@ -225,7 +225,7 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                        paid: true, payment_date: Time.zone.now - 1.month)
       present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                           paid: true, payment_date: Time.zone.now)
@@ -250,10 +250,10 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      paid_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200, 
+      paid_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                        paid: true, payment_date: Time.zone.now - 1.month)
       second_paid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                          paid: true, payment_date: Time.zone.now)
+                                              paid: true, payment_date: Time.zone.now)
       unpaid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                          paid: false, payment_date: Time.zone.now)
 

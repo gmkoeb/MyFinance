@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_04_142550) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_08_175004) do
   create_table "bills", force: :cascade do |t|
     t.string "name"
     t.string "billing_company"
@@ -35,6 +35,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_142550) do
     t.index ["user_id"], name: "index_companies_on_user_id"
   end
 
+  create_table "monthly_bills", force: :cascade do |t|
+    t.integer "company_id", null: false
+    t.string "name"
+    t.string "billing_company"
+    t.decimal "value", precision: 10, scale: 2
+    t.datetime "payment_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "name"], name: "index_monthly_bills_on_company_id_and_name", unique: true
+    t.index ["company_id"], name: "index_monthly_bills_on_company_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", default: "", null: false
@@ -47,4 +59,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_142550) do
 
   add_foreign_key "bills", "companies"
   add_foreign_key "companies", "users"
+  add_foreign_key "monthly_bills", "companies"
 end

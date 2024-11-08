@@ -4,7 +4,7 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
-import { CircleDollarSign, HousePlus } from "lucide-react";
+import { CircleDollarSign, HandCoins, HousePlus } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 import BillTable from "../components/BillTable";
 import { handleDeleteBill } from "../lib/handleDeleteBill";
@@ -27,7 +27,7 @@ export interface Bill {
   value: number | string | undefined,
   paid: boolean | undefined,
   month: string,
-  payment_date: Date | undefined,
+  payment_date: Date | null | undefined,
   recurrent: number | string | undefined
 }
 
@@ -97,6 +97,8 @@ export default function Home({ isSignedIn }: HomeProps){
     }
   }
 
+  
+
   useEffect(() => {
       if (isSignedIn) {
         getCompanies();
@@ -108,18 +110,21 @@ export default function Home({ isSignedIn }: HomeProps){
     <div>
         {isSignedIn ? (
           <div>
-            <div className="flex flex-col items-center mb-4">
-              <button 
-                className="text-xl items-center border border-black p-3 font-bold bg-blue-500 text-white rounded-full hover:opacity-80 duration-300 w-96 flex justify-center gap-3" 
-                onClick={handleShowCompanyForm}>
-                  <p>Cadastrar Empresa </p>
-                  <HousePlus width={26} height={26} />
-              </button>
-              {showCompanyForm && (
-                <div className="mb-3 flex flex-col">
-                  <CompanyForm errors={companyErrors} handleSubmit={handleCompanyCreation} />
-                </div>
-              )}
+            <div className="flex items-center justify-center gap-20 w-96 mx-auto mb-10">
+              <div className="flex flex-col items-center">
+                <button 
+                  className="text-xl items-center border border-black p-3 font-bold bg-blue-500 text-white rounded-full hover:opacity-80 duration-300 w-96 flex justify-center gap-3" 
+                  onClick={handleShowCompanyForm}>
+                    <p>Cadastrar Empresa </p>
+                    <HousePlus width={26} height={26} />
+                </button>
+                {showCompanyForm && (
+                  <div className="mb-3 flex flex-col">
+                    <CompanyForm errors={companyErrors} handleSubmit={handleCompanyCreation} />
+                  </div>
+                )}
+              </div>
+              
             </div>
             <div className="flex flex-col items-center border-t border-neutral-400">
               {companies.length > 0 &&
@@ -129,12 +134,17 @@ export default function Home({ isSignedIn }: HomeProps){
                     {companies.map(company => (
                       <div key={company.id} className="border border-black rounded mb-10 p-4 bg-neutral-100">
                         <h3 className="text-3xl italic font-semibold text-neutral-600 text-center">{company.name}</h3>
-                        <div>
+                        <div id="bill-form-container">
                           <h3 className="text-2xl text-blue-600 font-bold gap-2">Cadastrar Conta</h3>
-                          <BillForm company_id={company.id} errors={billErrors} handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)}/>
+                          <BillForm 
+                            isMonthly={false}
+                            company_id={company.id} 
+                            errors={billErrors} 
+                            handleSubmit={(values, actions) => handleBillCreation(company.id, values, actions)} 
+                          />
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold capitalize my-4">{new Date().toLocaleString('pt-BR', { month: 'long' })}</h3>
+                          <h3 className="text-xl font-bold capitalize my-4 month">{new Date().toLocaleString('pt-BR', { month: 'long' })}</h3>
                           {bills.filter(bill => bill.company_id === company.id).length > 0 && 
                             <div>
                               <table className="mx-auto table-container w-full">
@@ -153,7 +163,7 @@ export default function Home({ isSignedIn }: HomeProps){
                                   ))}
                                 </tbody>
                               </table>
-                              <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
+                              <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600 total-price"><CircleDollarSign /> Valor Total Pago: R$ {calculateMonthlyValue(bills.filter(bill => bill.company_id === company.id))}</h4>
                             </div>
                           }
                         </div>
