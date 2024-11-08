@@ -5,7 +5,7 @@ class Bill < ApplicationRecord
 
   after_create :handle_recurrent
 
-  after_destroy :handle_recurrent_destroy
+  after_destroy :handle_recurrent_destroy, :handle_monthly_destroy
 
   def as_json(options = {})
     super(options).merge({
@@ -22,6 +22,12 @@ class Bill < ApplicationRecord
   end
 
   private
+
+  def handle_monthly_destroy
+    return unless monthly
+
+    MonthlyBill.find_by(name:).update(payment_date: nil)
+  end
 
   def handle_recurrent_destroy
     return unless recurrent

@@ -19,7 +19,7 @@ class MonthlyBillsController < ApplicationController
 
   def create_bill
     bill = @company.bills.build(bill_params)
-    bill.payment_date = Time.zone.now
+    set_bill_stats(bill)
     find_and_update_monthly_bill(@company, bill)
 
     if bill.save
@@ -47,5 +47,10 @@ class MonthlyBillsController < ApplicationController
 
   def bill_params
     params.require(:bill).permit(:name, :value, :billing_company, :paid)
+  end
+
+  def set_bill_stats(bill)
+    bill.payment_date = Time.zone.now
+    bill.monthly = true
   end
 end
