@@ -1,5 +1,5 @@
 import { Settings } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 interface DropdownProps{
   buttons: string[],
@@ -7,10 +7,11 @@ interface DropdownProps{
   setClickedId: React.Dispatch<React.SetStateAction<number>>,
   setShowDropdown: React.Dispatch<React.SetStateAction<number>>,
   setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>,
-  billId: number
+  billId: number,
+  handleDeleteMonthlyBill: (billId: number) => void
 }
 
-export default function Dropdown( { buttons, showDropdown, setShowDropdown, billId, setShowEditForm, setClickedId }:DropdownProps ){
+export default function Dropdown( { buttons, showDropdown, setShowDropdown, billId, setShowEditForm, setClickedId, handleDeleteMonthlyBill }:DropdownProps ){
   function handleShowDropdown(event: React.MouseEvent<HTMLButtonElement>){
     setClickedId(Number(event.currentTarget.id))
     if (showDropdown !== -1){
@@ -50,7 +51,7 @@ export default function Dropdown( { buttons, showDropdown, setShowDropdown, bill
           <div className="py-1" role="none">
             {buttons.map(button => (
               <button 
-                onClick={() => button === 'Editar' ? handleShowEditForm() : ''}
+                onClick={() => button === 'Editar' ? handleShowEditForm() : handleDeleteMonthlyBill(billId)}
                 key={button} 
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 text-center w-full" role="menuitem" 
                 tabIndex={-1}>

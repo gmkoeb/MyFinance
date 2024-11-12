@@ -26,6 +26,10 @@ class Bill < ApplicationRecord
   def handle_monthly_destroy
     return unless monthly
 
+    monthly_bill = MonthlyBill.find_by(name:)
+
+    return if monthly_bill.nil?
+
     MonthlyBill.find_by(name:).update(payment_date: nil)
   end
 

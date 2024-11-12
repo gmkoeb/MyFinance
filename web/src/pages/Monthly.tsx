@@ -27,9 +27,19 @@ export default function Monthly(){
   useEffect(() => {
     getCompanies();
     setChange(false)
-    setBillErrors([])
-    setShowEdit(false)
-    setShowDropdown(-1)
+
+    if (billErrors.length > 0) {
+      setBillErrors([])
+    }
+
+    if (showEdit){
+      setShowEdit(false)
+    }
+
+    if (showDropdown !== -1){
+      setShowDropdown(-1)
+    }
+
   }, [change]); 
   
   async function payMonthlyBill(companyId: number, bill: Partial<Bill>){
@@ -94,10 +104,20 @@ export default function Monthly(){
       setBillErrors(error.response.data.message)
     }
   }
+
   async function getCompanies(){
     const result = await api.get('/companies')
     setCompanies(result.data)
     getMonthlyBills(result.data)
+  }
+
+  async function handleDeleteMonthlyBill(billId: number){
+    try {
+      await api.delete(`/monthly_bills/${billId}`)
+      setChange(true)
+    } catch (error) {
+      console.log(error)      
+    }
   }
 
   return(
@@ -150,7 +170,9 @@ export default function Monthly(){
                       buttons={buttons} 
                       setClickedId={setClickedId}
                       setShowDropdown={setShowDropdown} 
-                      billId={bill.id} />
+                      billId={bill.id} 
+                      handleDeleteMonthlyBill={handleDeleteMonthlyBill}
+                    />
                   </div>
                     {showEdit && clickedId === bill.id && (
                       <EditBillForm 
@@ -181,22 +203,20 @@ export default function Monthly(){
                         </div>
                       ):(
                         <div className="w-full">
-                          <form action="">
-                            <input 
-                              className="w-28 mb-1 border border-black rounded-lg text-center invalid:Field" 
-                              placeholder="Valor" 
-                              type="text"
-                              required
-                              onChange={(e) => setBillValue(e.target.value)}
-                            >
-                            </input>  
-                            <button 
-                              type="submit"
-                              onClick={() => payMonthlyBill(company.id, bill)}
-                              className="bg-green-600 p-1 rounded-b-lg text-sm w-full hover:opacity-90 duration-300 text-white">
-                                Pagar
-                            </button>
-                          </form>
+                          <input 
+                            className="w-28 mb-1 border border-black rounded-lg text-center invalid:Field" 
+                            placeholder="Valor" 
+                            type="text"
+                            required
+                            onChange={(e) => setBillValue(e.target.value)}
+                          >
+                          </input>  
+                          <button 
+                            type="submit"
+                            onClick={() => payMonthlyBill(company.id, bill)}
+                            className="bg-green-600 p-1 rounded-b-lg text-sm w-full hover:opacity-90 duration-300 text-white">
+                              Pagar
+                          </button>
                         </div>
                       )}
                     </div>
@@ -205,7 +225,7 @@ export default function Monthly(){
             </div>
           </div>
         ) : (
-          <div key={company.id} className="flex flex-col w-1/2 items-center mt-20">
+          <div key={company.id} className="flex flex-col w-1/2 items-center border-x border-b border-black bg-white">
             <h1 className="text-3xl">{company.name}</h1>
             <h2>Empresa ainda não possui mensalidades cadastradas</h2>
           </div>

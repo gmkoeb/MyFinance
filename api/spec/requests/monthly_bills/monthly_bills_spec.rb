@@ -91,5 +91,21 @@ describe 'Monthly Bills API' do
       expect(monthly_bill.billing_company).to eq 'Sanepar'
       expect(monthly_bill.value).to eq 133
     end
+
+    context 'delete /monthly_bills/:monthly_bill_id' do
+      it 'removes monthly bill' do
+        user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+        token = login_as(user)
+        company = user.companies.create(name: 'Casa')
+        monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
+                                                    payment_date: Time.zone.now - 1.month)
+  
+        delete monthly_bill_path(monthly_bill), headers: { Authorization: token }
+  
+        expect(response.status).to eq 200
+        expect(MonthlyBill.all.count).to eq 0
+        expect(MonthlyBill.last).to be nil
+      end
+    end
   end
 end

@@ -1,6 +1,7 @@
 class MonthlyBillsController < ApplicationController
   before_action :authorize_user
   before_action :set_company_and_check_user, only: %w[index create create_bill]
+  before_action :find_monthly_bill, only: %w[update destroy]
 
   def index
     render status: :ok, json: @company.monthly_bills
@@ -18,10 +19,13 @@ class MonthlyBillsController < ApplicationController
   end
 
   def update
-    monthly_bill = MonthlyBill.find(params[:id])
-    return render status: :ok if monthly_bill.update(monthly_bills_params)
+    return render status: :ok if @monthly_bill.update(monthly_bills_params)
 
-    render status: :bad_request, json: { message: monthly_bill.errors.full_messages }
+    render status: :bad_request, json: { message: @monthly_bill.errors.full_messages }
+  end
+
+  def destroy
+    render status: :ok if @monthly_bill.destroy
   end
 
   def create_bill
@@ -38,6 +42,10 @@ class MonthlyBillsController < ApplicationController
   end
 
   private
+
+  def find_monthly_bill
+    @monthly_bill = MonthlyBill.find(params[:id])  
+  end
 
   def find_and_update_monthly_bill(company, bill)
     company.monthly_bills.find_by(name: bill.name).update(value: bill.value, payment_date: Time.zone.now)
