@@ -10,7 +10,8 @@ interface BillFormProps{
   bill_id: number,
   bill: Bill,
   handleSubmit: (billId: number, values: Partial<Bill>, actions: FormikHelpers<Partial<Bill>>) => void,
-  errors: string[]
+  errors: string[],
+  isMonthly: boolean
 }
 
 interface BillFormValues{
@@ -18,10 +19,10 @@ interface BillFormValues{
   billing_company?: string,
   value?: string,
   payment_date?: string,
-  paid?: boolean,
+  paid?: boolean
 }
 
-export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, errors}: BillFormProps){
+export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, errors, isMonthly}: BillFormProps){
   return(
     <Formik
       initialValues={{ billName: bill.name, billing_company: bill.billing_company, value: bill.value, paid: bill.paid, payment_date: new Date() }}
@@ -48,7 +49,7 @@ export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, 
       }}
     >
     {({ setFieldValue, values }) => (
-      <Form className="flex gap-3 edit-bill-form">
+      <Form className={isMonthly ? "flex flex-col gap-3 edit-bill-form z-10 border px-4 bg-white rounded-lg py-2 absolute" : "flex gap-3 edit-bill-form"}>
         <div className="flex flex-col">
           <label htmlFor={`billName-${bill_id}`}>Nome</label>
           <Field className="rounded p-1 border border-black" id={`billName-${bill_id}`} name="billName" placeholder="Nome da conta"/>
@@ -66,24 +67,26 @@ export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, 
           <Field className="rounded p-1 border border-black" type="number" id={`value-${bill_id}`} name="value" placeholder="R$" />
           <ErrorMessage className="text-red-500" name="value" component={'div'}></ErrorMessage>
         </div>
+        {!isMonthly && 
+          <>
+            <div className="flex flex-col">
+              <label htmlFor="date">Data de pagamento</label>
+              <DatePicker
+                name="date"
+                className="rounded p-1 border border-black"
+                selected={values.payment_date}
+                onChange={(date: Date | null) => setFieldValue("payment_date", date)}
+              />
+            </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="date">Data de pagamento</label>
-          <DatePicker
-            name="date"
-            className="rounded p-1 border border-black"
-            selected={values.payment_date}
-            onChange={(date: Date | null) => setFieldValue("payment_date", date)}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label className="mb-2" htmlFor={`paid-${bill_id}`}>Pago</label>
-          <Field 
-            className="h-4" id={`paid-${bill_id}`} type="checkbox" 
-            name="paid" />
-        </div>
-        
+            <div className="flex flex-col">
+              <label className="mb-2" htmlFor={`paid-${bill_id}`}>Pago</label>
+              <Field 
+                className="h-4" id={`paid-${bill_id}`} type="checkbox" 
+                name="paid" />
+            </div>
+          </>
+        }
         <div className="flex flex-row justify-center items-center gap-3 ml-10">
           <button type="submit" className="w-20 rounded-xl h-8 text-center bg-violet-600 mt-5 text-white hover:opacity-80 duration-300">Editar</button>
           <X height={28} width={26} color="red" className="hover:cursor-pointer mt-5 hover:opacity-60 duration-300" onClick={() => setShowEdit(false)}/>

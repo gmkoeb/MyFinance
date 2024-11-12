@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { FormikHelpers } from "formik";
 import { api } from "../../api/axios";
 import { Bill, Company } from "./Home";
+import Dropdown from "../components/Dropdown";
+import EditBillForm from "../components/EditBillForm";
 
 export default function Monthly(){
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(-1)
@@ -11,8 +13,12 @@ export default function Monthly(){
   const [change, setChange] = useState<boolean>(false)
   const [billErrors, setBillErrors] = useState<string[]>([])
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [monthlyBills ,setMonthlyBills] = useState<Partial<Bill>[]>([])
+  const [monthlyBills ,setMonthlyBills] = useState<Bill[]>([])
   const [billValue, setBillValue] = useState<string>('')
+  const [showDropdown, setShowDropdown] = useState<number>(-1)
+  const [showEdit, setShowEdit] = useState<boolean>(false)
+  const [clickedId, setClickedId] = useState<number>(-1)
+  const buttons = ['Editar', 'Remover']
 
   useEffect(() => {
     setSelectedCompanyId(-1)
@@ -22,6 +28,8 @@ export default function Monthly(){
     getCompanies();
     setChange(false)
     setBillErrors([])
+    setShowEdit(false)
+    setShowDropdown(-1)
   }, [change]); 
   
   async function payMonthlyBill(companyId: number, bill: Partial<Bill>){
@@ -55,7 +63,6 @@ export default function Monthly(){
         monthly_bill: {
           name: values.billName,
           billing_company: values.billing_company,
-          paid: values.paid,
           payment_date: values.payment_date,
           value: 0
       }}
@@ -70,6 +77,23 @@ export default function Monthly(){
     }
   }
 
+  async function handleBillUpdate(monthlyBillId: number, values: Partial<Bill>, actions: FormikHelpers<Partial<Bill>>){
+    try {
+      const monthlyBillData = { 
+        monthly_bill: {
+          name: values.billName,
+          billing_company: values.billing_company,
+          payment_date: values.payment_date,
+          value: values.value
+      }}
+      api.patch(`/monthly_bills/${monthlyBillId}`, monthlyBillData)
+      actions.setSubmitting(false)
+      setChange(true)   
+    } catch (error: any) {
+      actions.setSubmitting(false)
+      setBillErrors(error.response.data.message)
+    }
+  }
   async function getCompanies(){
     const result = await api.get('/companies')
     setCompanies(result.data)
@@ -120,43 +144,62 @@ export default function Monthly(){
                     "flex flex-col gap-1 items-center border border-black rounded-lg bg-white w-40 h-fit justify-center text-center"}
                   >
                   <div>
-                    <h3 className="text-center text-md font-bold">{bill.name}</h3>
-                    <p>{bill.billing_company}</p>
-                    {bill.paid && 
-                      <p>{bill.value}</p>
-                    }
+                    <Dropdown 
+                      setShowEditForm={setShowEdit} 
+                      showDropdown={showDropdown} 
+                      buttons={buttons} 
+                      setClickedId={setClickedId}
+                      setShowDropdown={setShowDropdown} 
+                      billId={bill.id} />
                   </div>
-                
-                  {bill.paid ? (
+                    {showEdit && clickedId === bill.id && (
+                      <EditBillForm 
+                        setShowEdit={setShowEdit} 
+                        bill={bill} 
+                        bill_id={bill.id} 
+                        errors={billErrors} 
+                        handleSubmit={handleBillUpdate}
+                        isMonthly={true}
+                      />
+                    )}
                     <div className="w-full">
-                      <button 
-                        disabled
-                        onClick={() => payMonthlyBill(company.id, bill)} 
-                        className="bg-slate-500 mt-[7px] p-1 rounded-b-lg text-sm w-full text-white">
-                          Pago
-                      </button>
+                      <div className={bill.paid ? "opacity-45" : ""}>
+                        <h3 className="text-center text-md font-bold">{bill.name}</h3>
+                        <p>{bill.billing_company}</p>
+                        {bill.paid && 
+                          <p>{bill.value}</p>
+                        }
+                      </div>
+                      {bill.paid ? (
+                        <div className="w-full">
+                          <button 
+                            disabled
+                            onClick={() => payMonthlyBill(company.id, bill)} 
+                            className="bg-slate-500 mt-[7px] p-1 rounded-b-lg text-sm w-full text-white">
+                              Pago
+                          </button>
+                        </div>
+                      ):(
+                        <div className="w-full">
+                          <form action="">
+                            <input 
+                              className="w-28 mb-1 border border-black rounded-lg text-center invalid:Field" 
+                              placeholder="Valor" 
+                              type="text"
+                              required
+                              onChange={(e) => setBillValue(e.target.value)}
+                            >
+                            </input>  
+                            <button 
+                              type="submit"
+                              onClick={() => payMonthlyBill(company.id, bill)}
+                              className="bg-green-600 p-1 rounded-b-lg text-sm w-full hover:opacity-90 duration-300 text-white">
+                                Pagar
+                            </button>
+                          </form>
+                        </div>
+                      )}
                     </div>
-                  ):(
-                    <div className="w-full">
-                      <form action="">
-                        <input 
-                          className="w-28 mb-1 border border-black rounded-lg text-center invalid:Field" 
-                          placeholder="Valor" 
-                          type="text"
-                          required
-                          onChange={(e) => setBillValue(e.target.value)}
-                        >
-                        </input>  
-                        <button 
-                          type="submit"
-                          onClick={() => payMonthlyBill(company.id, bill)}
-                          className="bg-green-600 p-1 rounded-b-lg text-sm w-full hover:opacity-90 duration-300 text-white">
-                            Pagar
-                        </button>
-                      </form>
-                    </div>
-                  )}
-                  
                 </div>
               ))}
             </div>

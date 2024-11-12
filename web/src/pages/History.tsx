@@ -157,10 +157,8 @@ export default function History(){
                     ) : selectedYear !== 'default' && (<h1>Nenhuma conta encontrada</h1>)}
                     {months.map(month  => {
                       const monthlyBills = bills.filter(bill => bill.month === month)
-                      
                       return monthlyBills.length > 0 ? (
                         <div className="mb-10" key={month}>
-                          
                           <h2 className="capitalize font-bold">{month}</h2>
                             <div>
                               <table className="mx-auto table-container w-[50rem] max-md:w-[20rem]">

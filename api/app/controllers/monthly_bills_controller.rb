@@ -17,6 +17,13 @@ class MonthlyBillsController < ApplicationController
     end
   end
 
+  def update
+    monthly_bill = MonthlyBill.find(params[:id])
+    return render status: :ok if monthly_bill.update(monthly_bills_params)
+
+    render status: :bad_request, json: { message: monthly_bill.errors.full_messages }
+  end
+
   def create_bill
     bill = @company.bills.build(bill_params)
     set_bill_stats(bill)

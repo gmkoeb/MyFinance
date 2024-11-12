@@ -97,8 +97,8 @@ export default function BillForm({ company_id, handleSubmit, errors, isMonthly, 
         )}
         {!isMonthly && (
           <div className="flex flex-col align-middle items-center gap-3">
-            <div className="flex flex-col">
-              <label className="mb-2" htmlFor={`isRecurrentField-${company_id}`}>Recorrente</label>
+            <div className={isRecurrent ? "flex flex-col -mt-10" : "flex flex-col"}>
+              <label className="mb-2" htmlFor={`isRecurrentField-${company_id}`}>Parcelado</label>
               <Field 
                 checked={isRecurrent} 
                 onChange={() => isRecurrent ? setIsRecurrent(false) : setIsRecurrent(true)}
@@ -107,7 +107,7 @@ export default function BillForm({ company_id, handleSubmit, errors, isMonthly, 
             </div>
               {isRecurrent && 
                 <div>
-                  <Field className="rounded p-1 border border-black" type="number" id={`recurrent-${company_id}`} name="recurrent" placeholder="Número de vezes" />
+                  <Field className="rounded p-1 border border-black" type="number" id={`recurrent-${company_id}`} name="recurrent" placeholder="Número de parcelas" />
                   <ErrorMessage className="text-red-500" name="recurrent" component={'div'}></ErrorMessage>
                 </div>
               }

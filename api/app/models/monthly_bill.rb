@@ -19,7 +19,7 @@ class MonthlyBill < ApplicationRecord
 
   def paid_this_month(bill)
     return false if bill.payment_date.nil?
-    
+
     return true if bill.payment_date.year == Time.zone.now.year && bill.payment_date.month == Time.zone.now.month
 
     false

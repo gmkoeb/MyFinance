@@ -71,4 +71,25 @@ describe 'Monthly Bills API' do
       expect(bill.value).to eq 233
     end
   end
+
+  context 'patch /monthly_bills/:monthly_bill_id' do
+    it 'updates monthly bill' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+      token = login_as(user)
+      company = user.companies.create(name: 'Casa')
+      monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
+                                                  payment_date: Time.zone.now - 1.month)
+
+      patch monthly_bill_path(monthly_bill), headers: { Authorization: token },
+                                             params: { monthly_bill: { name: 'Conta de água', billing_company: 'Sanepar',
+                                                                       value: 133 } }
+
+      monthly_bill.reload
+
+      expect(response.status).to eq 200
+      expect(monthly_bill.name).to eq 'Conta de água'
+      expect(monthly_bill.billing_company).to eq 'Sanepar'
+      expect(monthly_bill.value).to eq 133
+    end
+  end
 end

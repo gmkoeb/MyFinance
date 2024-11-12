@@ -46,7 +46,7 @@ export default function BillTable( { setChange, bill, handleDeleteBill }: BillTa
         </>
       ): (
         <td colSpan={5}>
-          <EditBillForm setShowEdit={setShowEdit} bill={bill} errors={errors} handleSubmit={handleBillUpdate} bill_id={bill.id} />
+          <EditBillForm isMonthly={false} setShowEdit={setShowEdit} bill={bill} errors={errors} handleSubmit={handleBillUpdate} bill_id={bill.id} />
         </td>
       )}
       {!showEdit &&

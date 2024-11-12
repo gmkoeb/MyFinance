@@ -12,4 +12,5 @@ Rails.application.routes.draw do
     get '/bills_years', to: 'bills#years', controller: 'bills', as: 'bills_years'
   end
   resources :bills, only: %w[update destroy]
+  resources :monthly_bills, only: %w[update]
 end

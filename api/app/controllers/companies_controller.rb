@@ -20,11 +20,11 @@ class CompaniesController < ApplicationController
 
   def update
     if @company.update(company_params)
-      render status: :ok, json: { message: I18n.t('company.crud.update_success') }
-    else
-      render status: :bad_request,
-             json: { message: @company.errors.full_messages }
+      return render status: :ok,
+                    json: { message: I18n.t('company.crud.update_success') }
     end
+
+    render status: :bad_request, json: { message: @company.errors.full_messages }
   end
 
   private
