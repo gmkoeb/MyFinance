@@ -2,12 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.table-container {
+.table-container, .company-table-container {
   margin-top: 1rem;
 }
 
 .table-container th,
-.table-container td {
+.table-container td,
+.company-table-container td {
   padding: 12px 15px;
   text-align: left;
   border: 1px solid #ddd;
@@ -18,8 +19,25 @@
   font-weight: bold;
 } 
 
-.table-container td {
+.table-container td, .company-table-container td {
   border: 1px solid #ddd;
+}
+
+.company-table-container td{
+  background-color: white;
+  text-align: center;
+}
+
+.company-table-container th{
+  background-color: #3b82f6;
+  color: white;
+  text-align: center;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.company-row:hover td {
+  background-color: #91bafc !important;
 }
 
 @media (max-width: 1300px) {

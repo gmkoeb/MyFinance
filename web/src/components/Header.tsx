@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
 
 interface HeaderProps {
   isSignedIn: boolean;
@@ -28,9 +29,10 @@ export default function Header({ isSignedIn }: HeaderProps){
         <div className="flex items-center gap-10">
           <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
           {isSignedIn && (
-            <div className="mt-2">
-              <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300 mx-10'} to='/monthly'>Mensalidades</NavLink>
-              <NavLink className={'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/history'>Histórico</NavLink>
+            <div className="mt-2 ml-10 flex gap-8">
+              <NavLink className={({ isActive }) => isActive ? 'text-2xl font-bold text-black border-b-2 border-black hover:opacity-80 duration-300' :'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/monthly'>Mensalidades</NavLink>
+              <NavLink className={({ isActive }) => isActive ? 'text-2xl font-bold text-black border-b-2 border-black hover:opacity-80 duration-300' :'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/history'>Histórico</NavLink>
+              <NavLink className={({ isActive }) => isActive ? 'text-2xl font-bold text-black border-b-2 border-black hover:opacity-80 duration-300' :'text-2xl font-bold text-blue-600 hover:opacity-80 duration-300'} to='/companies'>Minhas Empresas</NavLink>
             </div>
           )}
         </div>
@@ -39,7 +41,12 @@ export default function Header({ isSignedIn }: HeaderProps){
             <div className="flex items-center gap-20">
               <div className="flex flex-col justify-center">
                 <h3 className="font-semibold text-blue-600 text-xl">{userName}</h3>
-                <button className="border rounded-xl bg-red-500 text-white w-16 py-[1px] mx-auto hover:opacity-85 duration-300" onClick={handleLogout}>Sair</button>
+                <button 
+                  className="border rounded-xl bg-red-500 text-white w-16 py-[2px] px-1 justify-center mx-auto hover:opacity-85 duration-300 flex items-center gap-1" 
+                  onClick={handleLogout}>
+                    <LogOut color="#E8E8E8" width={19}></LogOut> 
+                    Sair
+                </button>
               </div>
             </div>
           ) : (

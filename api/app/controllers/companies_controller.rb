@@ -1,6 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :authorize_user
-  before_action :find_company_and_check_user, only: %w[update]
+  before_action :find_company_and_check_user, only: %w[update destroy]
 
   def index
     render status: :ok, json: @current_user.companies.order(:name)
@@ -25,6 +25,10 @@ class CompaniesController < ApplicationController
     end
 
     render status: :bad_request, json: { message: @company.errors.full_messages }
+  end
+
+  def destroy
+    render status: :ok if @company.destroy  
   end
 
   private

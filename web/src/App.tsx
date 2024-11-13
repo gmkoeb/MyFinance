@@ -8,6 +8,7 @@ import ProtectedRoutes from './ProtectedRoutes'
 import History from './pages/History'
 import { api } from '../api/axios'
 import Monthly from './pages/Monthly'
+import Companies from './pages/Companies'
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
@@ -45,7 +46,8 @@ function App() {
       element: <ProtectedRoutes isSignedIn={isSignedIn}/>,
       children: [
         {path: '/history', element: <History />},
-        {path: '/monthly', element: <Monthly />}
+        {path: '/monthly', element: <Monthly />},
+        {path: '/companies', element: <Companies />}
       ]
     }
   ])
