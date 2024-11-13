@@ -190,7 +190,7 @@ export default function History(){
           </div>
         </>
       ) : (
-        <><h1 className="text-3xl text-center">Você não possui empresas cadastradas.</h1></>
+        <h1 className="text-center">Você não possui nenhuma empresa cadastrada</h1>
       )}
     </div>
   )

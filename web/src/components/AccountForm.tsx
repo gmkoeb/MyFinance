@@ -80,7 +80,7 @@ export default function AccountForm({ initialValues, submit, isSignIn, apiErrors
               )}
             <button className="mt-2 border bg-blue-500 rounded-lg p-1 px-4 text-white hover:opacity-80 duration-300" type="submit">Enviar</button>
             {apiErrors.length > 0 &&
-              <div className="flex flex-col">
+              <div className="flex flex-col text-center text-red-500">
                 {apiErrors.map(error => (
                   <p key={error}>{error}</p>
                 ))}
