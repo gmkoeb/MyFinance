@@ -25,7 +25,7 @@ interface BillFormValues{
 export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, errors, isMonthly}: BillFormProps){
   return(
     <Formik
-      initialValues={{ billName: bill.name, billing_company: bill.billing_company, value: bill.value, paid: bill.paid, payment_date: new Date() }}
+      initialValues={{ billName: bill.name, billing_company: bill.billing_company, value: Number(bill.value).toLocaleString("pt-BR"), paid: bill.paid, payment_date: new Date() }}
       validate={(values)=>{
         const errors: Partial<BillFormValues> = {}
 
@@ -64,7 +64,7 @@ export default function EditBillForm({setShowEdit, bill, bill_id, handleSubmit, 
         
         <div className="flex flex-col">
           <label htmlFor={`value-${bill_id}`}>Valor da conta</label>
-          <Field className="rounded p-1 border border-black" type="number" id={`value-${bill_id}`} name="value" placeholder="R$" />
+          <Field className="rounded p-1 border border-black" type="text" id={`value-${bill_id}`} name="value" placeholder="R$" />
           <ErrorMessage className="text-red-500" name="value" component={'div'}></ErrorMessage>
         </div>
         {!isMonthly && 

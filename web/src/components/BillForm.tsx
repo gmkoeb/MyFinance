@@ -75,7 +75,7 @@ export default function BillForm({ company_id, handleSubmit, errors, isMonthly, 
           <div className="flex gap-3">
             <div className="flex flex-col w-fit">
               <label htmlFor={`value-${company_id}`}>Valor da conta</label>
-              <Field className="rounded p-1 border border-black" type="number" id={`value-${company_id}`} name="value" placeholder="R$" />
+              <Field className="rounded p-1 border border-black" type="text" id={`value-${company_id}`} name="value" placeholder="R$" />
               <ErrorMessage className="text-red-500" name="value" component={'div'}></ErrorMessage>
             </div>
             <div className="flex flex-col w-fit">

@@ -45,7 +45,7 @@ export default function History(){
   async function getBillsStatistics(company_id: number){
     const result = await api.get(`/companies/${company_id}/bills_statistics/${selectedYear}?query=${paymentStatus}`)
     const stats: Stats = result.data.stats
-    setBillStats(Object.entries(stats).map(([key, value]) => [key, { v: value, f: `R$ ${value.toLocaleString()}` }]));
+    setBillStats(Object.entries(stats).map(([key, value]) => [key, { v: value, f: `R$ ${value.toLocaleString("pt-BR")}` }]));
   }
 
   function handleCompanySelection(company_id: number){

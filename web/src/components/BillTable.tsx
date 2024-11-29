@@ -20,7 +20,7 @@ export default function BillTable( { setChange, bill, handleDeleteBill }: BillTa
       const billData = { bill: {
         name: values.billName,
         billing_company: values.billing_company,
-        value: values.value,
+        value: values.value?.toLocaleString("pt-BR").replace(',', '.'),
         paid: values.paid,
         payment_date: values.payment_date,
         recurrent: values.recurrent
@@ -41,7 +41,7 @@ export default function BillTable( { setChange, bill, handleDeleteBill }: BillTa
         <>
           <td>{bill.name}</td>
           <td>{bill.billing_company}</td>
-          <td>{Number(bill.value).toFixed(2)?.toLocaleString()?.replace(".", ",")}</td>
+          <td>{Number(Number(bill.value).toFixed(2)).toLocaleString("pt-BR")}</td>
           <td>{bill.paid ? "Efetuado" : "Não Efetuado"}</td>
         </>
       ): (

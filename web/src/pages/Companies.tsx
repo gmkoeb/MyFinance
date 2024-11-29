@@ -99,7 +99,7 @@ export default function Companies(){
                   </PenBox>
                 </td>
                 <td>{company.bills_count}</td>
-                <td>R$ {Number(company.total_value)?.toFixed(2).toLocaleString().replace('.', ',')}</td>
+                <td>R$ {Number(company.total_value).toLocaleString("pt-BR")}</td>
                 <td onClick={() => handleCompanyDeletion(company.id)} className="w-10"><Trash2 color="red" className="hover:cursor-pointer"></Trash2></td>
               </tr>
             ))}

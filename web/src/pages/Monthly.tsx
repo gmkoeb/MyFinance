@@ -48,7 +48,7 @@ export default function Monthly(){
         const billData = { bill: {
             name: bill.name,
             billing_company: bill.billing_company,
-            value: billValue,
+            value: billValue.replace(',', '.'),
             paid: true
           }
         }
@@ -94,7 +94,7 @@ export default function Monthly(){
           name: values.billName,
           billing_company: values.billing_company,
           payment_date: values.payment_date,
-          value: values.value
+          value: values.value?.toString().replace(',', '.')
       }}
       api.patch(`/monthly_bills/${monthlyBillId}`, monthlyBillData)
       actions.setSubmitting(false)
@@ -191,7 +191,7 @@ export default function Monthly(){
                             <h3 className="text-center text-md font-bold">{bill.name}</h3>
                             <p>{bill.billing_company}</p>
                             {bill.paid && 
-                              <p>{bill.value}</p>
+                              <p>{Number(bill.value)?.toLocaleString('pt-BR')}</p>
                             }
                           </div>
                           {bill.paid ? (

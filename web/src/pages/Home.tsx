@@ -82,7 +82,7 @@ export default function Home({ isSignedIn }: HomeProps){
         bill: {
           name: values.billName,
           billing_company: values.billing_company,
-          value: values.value,
+          value: values.value?.toString().replace(',', '.'),
           paid: values.paid,
           payment_date: values.payment_date,
           recurrent: values.recurrent
