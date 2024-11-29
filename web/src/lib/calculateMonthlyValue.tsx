@@ -6,5 +6,5 @@ export default function calculateMonthlyValue(filteredBills: Bill[]){
   filteredBills.forEach(bill => {
     totalValue += Number(bill.value)
   })
-  return totalValue
+  return totalValue.toFixed(2).toLocaleString().replace(".", ",")
 }

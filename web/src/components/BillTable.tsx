@@ -41,7 +41,7 @@ export default function BillTable( { setChange, bill, handleDeleteBill }: BillTa
         <>
           <td>{bill.name}</td>
           <td>{bill.billing_company}</td>
-          <td>{bill.value}</td>
+          <td>{Number(bill.value).toFixed(2)?.toLocaleString()?.replace(".", ",")}</td>
           <td>{bill.paid ? "Efetuado" : "Não Efetuado"}</td>
         </>
       ): (
