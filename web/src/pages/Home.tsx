@@ -4,7 +4,7 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
-import { CircleDollarSign, HandCoins, HousePlus } from "lucide-react";
+import { CircleDollarSign, HousePlus } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 import BillTable from "../components/BillTable";
 import { handleDeleteBill } from "../lib/handleDeleteBill";

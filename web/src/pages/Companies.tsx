@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/axios";
 import { Company } from "./Home";
-import { PenBox, Trash2, X } from "lucide-react";
+import { PenBox, Trash2 } from "lucide-react";
 
 interface CompanyDetails extends Company{
   total_value: number,
