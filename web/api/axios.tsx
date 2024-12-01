@@ -2,7 +2,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: 'https://finance-api.bosswatchtower.com'
 })
 
 if (Cookies.get('token')) {
