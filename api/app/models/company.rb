@@ -9,8 +9,8 @@ class Company < ApplicationRecord
 
   def as_json(options = {})
     super(options).merge({
-                          'bills_count' => bills.paid.count,
-                          'total_value' => bills.paid.map(&:value).sum
-                        })
+                           'bills_count' => bills.paid.count,
+                           'total_value' => bills.paid.map(&:value).sum
+                         })
   end
 end

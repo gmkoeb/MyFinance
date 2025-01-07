@@ -203,18 +203,17 @@ describe 'Bills API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
-      past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                                       payment_date: Time.zone.now - 1.month)
-      present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                          payment_date: Time.zone.now)
+      first_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
+                                        payment_date: Time.zone.now)
+      second_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
+                                         payment_date: Time.zone.now)
 
-      get company_bills_history_path(company, '2024'), headers: { Authorization: token }
+      get company_bills_history_path(company, Time.zone.now.year), headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
-      expect(json_response['bills']).to include past_bill.as_json
-      expect(json_response['bills']).to include present_bill.as_json
-      expect(json_response['months']).to include I18n.t('date.month_names')[(Time.zone.now - 1.month).month]
+      expect(json_response['bills']).to include first_bill.as_json
+      expect(json_response['bills']).to include second_bill.as_json
       expect(json_response['months']).to include I18n.t('date.month_names')[Time.zone.now.month]
       expect(json_response['company']).to eq 'Casa'
     end
@@ -226,20 +225,19 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                                       paid: true, payment_date: Time.zone.now - 1.month)
+                                       paid: true, payment_date: Time.zone.now - 1.year)
       present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                           paid: true, payment_date: Time.zone.now)
       unpaid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                          paid: false, payment_date: Time.zone.now)
 
-      get '/companies/1/bills_history/2024?query=paid', headers: { Authorization: token }
+      get "/companies/1/bills_history/#{Time.zone.now.year}?query=paid", headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
-      expect(json_response['bills']).to include past_bill.as_json
-      expect(json_response['bills']).to include present_bill.as_json
+      expect(json_response['bills']).to_not include past_bill.as_json
       expect(json_response['bills']).to_not include unpaid_bill.as_json
-      expect(json_response['months']).to include I18n.t('date.month_names')[(Time.zone.now - 1.month).month]
+      expect(json_response['bills']).to include present_bill.as_json
       expect(json_response['months']).to include I18n.t('date.month_names')[Time.zone.now.month]
       expect(json_response['company']).to eq 'Casa'
     end
@@ -257,7 +255,7 @@ describe 'Bills API' do
       unpaid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                                          paid: false, payment_date: Time.zone.now)
 
-      get '/companies/1/bills_history/2024?query=unpaid', headers: { Authorization: token }
+      get "/companies/1/bills_history/#{Time.zone.now.year}?query=unpaid", headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
@@ -275,15 +273,16 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now - 1.month)
+                           payment_date: 'Tue, 07 Jan 2025 10:49:20.042364016 -03 -03:00')
       company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                           payment_date: Time.zone.now)
+                           payment_date: 'Tue, 07 Jan 2024 10:49:20.042364016 -03 -03:00')
 
       get company_bills_years_path(company), headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
       expect(json_response['years']).to include 2024
+      expect(json_response['years']).to include 2025
     end
   end
 
@@ -293,7 +292,7 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now - 1.month)
+                           payment_date: Time.zone.now)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                            payment_date: Time.zone.now)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
@@ -301,7 +300,7 @@ describe 'Bills API' do
       company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                            payment_date: Time.zone.now)
 
-      get company_bills_statistics_path(company, '2024'), headers: { Authorization: token }
+      get company_bills_statistics_path(company, Time.zone.now.year), headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
@@ -318,15 +317,15 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now - 1.month, paid: true)
+                           payment_date: Time.zone.now, paid: true)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                            payment_date: Time.zone.now, paid: true)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
                            payment_date: Time.zone.now, paid: false)
       company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                           payment_date: Time.zone.now, paid: false)
+                           payment_date: Time.zone.now - 1.year, paid: true)
 
-      get '/companies/1/bills_statistics/2024?query=paid', headers: { Authorization: token }
+      get "/companies/1/bills_statistics/#{Time.zone.now.year}?query=paid", headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
@@ -342,7 +341,7 @@ describe 'Bills API' do
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now - 1.month, paid: true)
+                           payment_date: Time.zone.now - 1.year, paid: true)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                            payment_date: Time.zone.now, paid: true)
       company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
@@ -350,7 +349,7 @@ describe 'Bills API' do
       company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
                            payment_date: Time.zone.now, paid: false)
 
-      get '/companies/1/bills_statistics/2024?query=unpaid', headers: { Authorization: token }
+      get "/companies/1/bills_statistics/#{Time.zone.now.year}?query=unpaid", headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200

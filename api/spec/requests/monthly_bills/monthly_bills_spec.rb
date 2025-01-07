@@ -99,9 +99,9 @@ describe 'Monthly Bills API' do
         company = user.companies.create(name: 'Casa')
         monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                                                     payment_date: Time.zone.now - 1.month)
-  
+
         delete monthly_bill_path(monthly_bill), headers: { Authorization: token }
-  
+
         expect(response.status).to eq 200
         expect(MonthlyBill.all.count).to eq 0
         expect(MonthlyBill.last).to be nil

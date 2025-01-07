@@ -44,7 +44,7 @@ class MonthlyBillsController < ApplicationController
   private
 
   def find_monthly_bill
-    @monthly_bill = MonthlyBill.find(params[:id])  
+    @monthly_bill = MonthlyBill.find(params[:id])
   end
 
   def find_and_update_monthly_bill(company, bill)

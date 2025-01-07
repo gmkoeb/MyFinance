@@ -21,6 +21,9 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Naming/AccessorMethodName:
+  Enabled: false
+  
 Metrics/BlockLength:
   AllowedMethods: ['describe', 'context', 'feature', 'scenario', 'let', 'it']
 

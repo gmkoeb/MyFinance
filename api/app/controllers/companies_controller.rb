@@ -28,7 +28,7 @@ class CompaniesController < ApplicationController
   end
 
   def destroy
-    render status: :ok if @company.destroy  
+    render status: :ok if @company.destroy
   end
 
   private
