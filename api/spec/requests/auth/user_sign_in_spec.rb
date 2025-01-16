@@ -4,7 +4,7 @@ describe 'User logs in' do
   it 'with success' do
     User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
     allow(JsonWebToken).to receive(:encode).with(user_id: 1).and_return('123456')
-    post users_sign_in_path, params: { user: { email: 'test@test.com', password: '123456' } }
+    post api_v1_users_sign_in_path, params: { user: { email: 'test@test.com', password: '123456' } }
 
     json_response = JSON.parse(response.body)
     expect(response.status).to eq 200
@@ -16,7 +16,7 @@ describe 'User logs in' do
   it 'with wrong parameters' do
     User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
     allow(JsonWebToken).to receive(:encode).with(user_id: 1).and_return('123456')
-    post users_sign_in_path, params: { user: { email: 'test2@test.com', password: '4eqweqweqw' } }
+    post api_v1_users_sign_in_path, params: { user: { email: 'test2@test.com', password: '4eqweqweqw' } }
 
     json_response = JSON.parse(response.body)
     expect(response.status).to eq 401

@@ -6,7 +6,7 @@ describe 'Companies API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
 
-      post companies_path, headers: { Authorization: token }, params: { company: { name: 'Casa' } }
+      post api_v1_companies_path, headers: { Authorization: token }, params: { company: { name: 'Casa' } }
 
       company = Company.last
       json_response = JSON.parse(response.body)
@@ -21,7 +21,7 @@ describe 'Companies API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
 
-      post companies_path, headers: { Authorization: token }, params: { company: { name: '' } }
+      post api_v1_companies_path, headers: { Authorization: token }, params: { company: { name: '' } }
 
       json_response = JSON.parse(response.body)
 
@@ -30,7 +30,7 @@ describe 'Companies API' do
     end
 
     it 'cant create a company while not authenticated' do
-      post companies_path, params: { bill: { name: 'Academia' } }
+      post api_v1_companies_path, params: { bill: { name: 'Academia' } }
 
       json_response = JSON.parse(response.body)
 
@@ -44,8 +44,8 @@ describe 'Companies API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       company = user.companies.create(name: 'Casa')
       token = login_as(user)
-      patch company_path(company), headers: { Authorization: token },
-                                   params: { company: { name: 'Academia' } }
+      patch api_v1_company_path(company), headers: { Authorization: token },
+                                          params: { company: { name: 'Academia' } }
 
       json_response = JSON.parse(response.body)
       company.reload
@@ -58,8 +58,8 @@ describe 'Companies API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       company = user.companies.create(name: 'Casa')
       token = login_as(user)
-      patch company_path(company), headers: { Authorization: token },
-                                   params: { company: { name: '' } }
+      patch api_v1_company_path(company), headers: { Authorization: token },
+                                          params: { company: { name: '' } }
 
       json_response = JSON.parse(response.body)
 
@@ -74,8 +74,8 @@ describe 'Companies API' do
       company = first_user.companies.create(name: 'Casa')
 
       token = login_as(second_user)
-      patch company_path(company), headers: { Authorization: token },
-                                   params: { company: { name: 'Academia' } }
+      patch api_v1_company_path(company), headers: { Authorization: token },
+                                          params: { company: { name: 'Academia' } }
 
       json_response = JSON.parse(response.body)
       expect(response.status).to eq 401
@@ -91,7 +91,7 @@ describe 'Companies API' do
       user.companies.create(name: 'Empresa 1')
 
       token = login_as(user)
-      get companies_path, headers: { Authorization: token }
+      get api_v1_companies_path, headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
@@ -102,7 +102,7 @@ describe 'Companies API' do
     end
 
     it 'user must be logged in to see his companies' do
-      get companies_path
+      get api_v1_companies_path
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 401

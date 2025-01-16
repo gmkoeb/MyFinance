@@ -7,9 +7,9 @@ describe 'Monthly Bills API' do
       company = user.companies.create(name: 'Casa')
       token = login_as(user)
 
-      post company_monthly_bills_path(company), headers: { Authorization: token },
-                                                params: { monthly_bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
-                                                                          paid: true, payment_date: Time.zone.now } }
+      post api_v1_company_monthly_bills_path(company), headers: { Authorization: token },
+                                                       params: { monthly_bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
+                                                                                 paid: true, payment_date: Time.zone.now } }
 
       bill = MonthlyBill.last
       json_response = JSON.parse(response.body)
@@ -37,7 +37,7 @@ describe 'Monthly Bills API' do
       company.bills.create(name: 'Conta de água 2', billing_company: 'Copel', value: 300,
                            payment_date: Time.zone.now)
 
-      get company_monthly_bills_path(company), headers: { Authorization: token }
+      get api_v1_company_monthly_bills_path(company), headers: { Authorization: token }
 
       json_response = JSON.parse(response.body)
 
@@ -57,9 +57,9 @@ describe 'Monthly Bills API' do
       monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                                                   payment_date: Time.zone.now - 1.month)
 
-      post company_create_bill_path(company), headers: { Authorization: token },
-                                              params: { bill: { name: 'Conta de luz', billing_company: 'Copel',
-                                                                value: 233 } }
+      post api_v1_company_create_bill_path(company), headers: { Authorization: token },
+                                                     params: { bill: { name: 'Conta de luz', billing_company: 'Copel',
+                                                                       value: 233 } }
 
       bill = Bill.last
       monthly_bill.reload
@@ -80,9 +80,9 @@ describe 'Monthly Bills API' do
       monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                                                   payment_date: Time.zone.now - 1.month)
 
-      patch monthly_bill_path(monthly_bill), headers: { Authorization: token },
-                                             params: { monthly_bill: { name: 'Conta de água', billing_company: 'Sanepar',
-                                                                       value: 133 } }
+      patch api_v1_monthly_bill_path(monthly_bill), headers: { Authorization: token },
+                                                    params: { monthly_bill: { name: 'Conta de água', billing_company: 'Sanepar',
+                                                                              value: 133 } }
 
       monthly_bill.reload
 
@@ -100,7 +100,7 @@ describe 'Monthly Bills API' do
         monthly_bill = company.monthly_bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
                                                     payment_date: Time.zone.now - 1.month)
 
-        delete monthly_bill_path(monthly_bill), headers: { Authorization: token }
+        delete api_v1_monthly_bill_path(monthly_bill), headers: { Authorization: token }
 
         expect(response.status).to eq 200
         expect(MonthlyBill.all.count).to eq 0
