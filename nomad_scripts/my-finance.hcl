@@ -17,7 +17,7 @@ job "my-finance" {
 
         ports = ["http"]
         
-        volumes = ["/opt/storage:/storage"]
+        volumes = ["/opt/storage:/rails/storage"]
 
         args = ["server"]
         command = "rails"
