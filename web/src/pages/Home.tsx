@@ -148,7 +148,7 @@ export default function Home({ isSignedIn }: HomeProps) {
                 <h2 className="text-4xl font-bold text-center mb-10">
                   Empresas
                 </h2>
-                <div className="flex flex-col w-[1200px] max-2xl:w-[800px]">
+                <div className="flex flex-col w-[1100px] max-2xl:w-[780px]">
                   {companies.map(company => (
                     <div
                       key={company.id}

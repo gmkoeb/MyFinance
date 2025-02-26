@@ -33,7 +33,7 @@ export default function Aside() {
         </AsideLink>
         <AsideLink to="/monthly">
           <CalendarClock className="mt-0.5 size-6" />
-          Mensalides
+          Mensalidades
         </AsideLink>
         <AsideLink to="/history">
           <History className="mt-0.5 size-6" />
