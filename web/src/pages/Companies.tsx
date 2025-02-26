@@ -63,7 +63,7 @@ export default function Companies(){
 
   return(
     <div>
-      <h1 className="text-center mb-10 text-4xl">Minhas Empresas</h1>
+      <h1 className="text-center mb-10 text-4xl font-semibold">Minhas Empresas</h1>
       {companies.length > 0 ? (
         <table className="company-table-container w-[75%] mx-auto">
           <thead>

@@ -55,7 +55,7 @@ export default function BillForm({ company_id, handleSubmit, errors, isMonthly, 
       <Form className={isMonthly ? "flex flex-col gap-3 items-center border border-black bg-white px-16 pt-5 rounded-lg" : "flex gap-3"}>
         {isMonthly && setSelectedCompanyId && 
           <div className="flex">
-            <h1 className="text-center text-lg">Cadastrar Mensalidade</h1>
+            <h5 className="text-center text-lg">Cadastrar Mensalidade</h5>
             <div className="relative">
               <X className="-mt-2 absolute left-8 hover:cursor-pointer hover:opacity-60 duration-300" color="red" onClick={() => setSelectedCompanyId(-1)}></X>
             </div>

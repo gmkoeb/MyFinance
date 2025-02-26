@@ -24,7 +24,7 @@ export default function Header({ isSignedIn }: HeaderProps){
   }, [])
   
   return(
-    <header className="bg-neutral-100 py-5 border-b border-neutral-400 px-4 mb-20">
+    <header className="bg-neutral-100 py-5 border-b border-neutral-400 px-4 mb-20 font-heading">
       <nav className="flex justify-between">
         <div className="flex items-center gap-10">
           <NavLink to='/' className={'text-4xl font-bold'}><span className="text-blue-500">Minhas</span> Finanças</NavLink>
@@ -42,9 +42,9 @@ export default function Header({ isSignedIn }: HeaderProps){
               <div className="flex flex-col justify-center">
                 <h3 className="font-semibold text-blue-600 text-xl">{userName}</h3>
                 <button 
-                  className="border rounded-xl bg-red-500 text-white w-16 py-[2px] px-1 justify-center mx-auto hover:opacity-85 duration-300 flex items-center gap-1" 
+                  className="border text-red-500 w-16 justify-center mx-auto hover:opacity-85 duration-300 border-red-500 flex items-center gap-1 hover:bg-red-500 hover:text-neutral-200 rounded-md" 
                   onClick={handleLogout}>
-                    <LogOut color="#E8E8E8" width={19}></LogOut> 
+                    <LogOut width={19}></LogOut> 
                     Sair
                 </button>
               </div>

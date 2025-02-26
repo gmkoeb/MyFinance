@@ -89,10 +89,10 @@ export default function History(){
       {companies.length > 0 ? (
         <>
           <div className="flex justify-center items-center">
-            <h1 className="text-4xl text-center font-bold text-neutral-600 mb-4">Histórico</h1>
+            <h1 className="text-4xl text-center font-bold text-neutral-900 mb-4">Histórico</h1>
           </div>
           <div>
-            <h2 className="text-4xl mx-28 mb-6 font-bold">Histórico</h2>
+            <h2 className="text-4xl mx-28 mb-6 font-semibold">Histórico</h2>
             <div className="ml-28 border-b border-neutral-400 relative"></div>
             <div className="mx-28 mt-6">
               <select className="rounded-l-lg py-1 border-r border-t-2 border-b-2 border-l-2 border-neutral-300 text-lg font-bold px-2" onChange={(e) => handleCompanySelection(Number(e.target.value))}>

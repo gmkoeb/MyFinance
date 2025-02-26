@@ -4,7 +4,7 @@ import { api } from "../../api/axios";
 import { FormikHelpers } from "formik";
 import CompanyForm from "../components/CompanyForm";
 import BillForm from "../components/BillForm";
-import { CircleDollarSign, HousePlus } from "lucide-react";
+import { Banknote, CircleDollarSign, HousePlus } from "lucide-react";
 import calculateMonthlyValue from "../lib/calculateMonthlyValue";
 import BillTable from "../components/BillTable";
 import { handleDeleteBill } from "../lib/handleDeleteBill";
@@ -135,7 +135,7 @@ export default function Home({ isSignedIn }: HomeProps){
                       <div key={company.id} className="border border-black rounded mb-10 p-4 bg-neutral-100">
                         <h3 className="text-3xl italic font-semibold text-neutral-600 text-center">{company.name}</h3>
                         <div id="bill-form-container">
-                          <h3 className="text-2xl text-blue-600 font-bold gap-2">Cadastrar Conta</h3>
+                          <h3 className="text-2xl text-blue-600 font-bold gap-2 mb-2 flex"><Banknote className="text-green-600 size-8"/>Cadastrar Conta</h3>
                           <BillForm 
                             isMonthly={false}
                             company_id={company.id} 
