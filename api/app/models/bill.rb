@@ -2,9 +2,7 @@ class Bill < ApplicationRecord
   belongs_to :company
 
   validates :name, :billing_company, :value, :payment_date, presence: true
-
   after_create :handle_recurrent
-
   after_destroy :handle_recurrent_destroy, :handle_monthly_destroy
 
   def as_json(options = {})
@@ -20,7 +18,7 @@ class Bill < ApplicationRecord
   def self.unpaid
     Bill.where(paid: false)
   end
-
+  
   private
 
   def handle_monthly_destroy

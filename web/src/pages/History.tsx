@@ -2,10 +2,11 @@ import { CircleDollarSign } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Chart from 'react-google-charts'
 import { api } from '../../api/axios'
-import BillTable from '../components/BillTable'
+import BillTable from '../components/Home/BillTable'
 import calculateMonthlyValue from '../lib/calculateMonthlyValue'
 import { handleDeleteBill } from '../lib/handleDeleteBill'
 import type { Bill, Company } from './Home'
+import { BRL } from '../lib/formatToBRL'
 
 type BillEntry = [string, {}]
 type BillData = BillEntry[]
@@ -187,7 +188,7 @@ export default function History() {
                       <div className="mb-10" key={month}>
                         <h2 className="capitalize font-bold">{month}</h2>
                         <div>
-                          <table className="mx-auto table-container w-[50rem] max-md:w-[20rem]">
+                          <table className="mx-auto table-container min-[1380px]:w-[950px]">
                             <thead>
                               <tr>
                                 <th>Nome da conta</th>
@@ -212,7 +213,7 @@ export default function History() {
                           </table>
                           <h4 className="flex justify-center bg-white border font-bold py-1 gap-2 text-red-600 mb-5">
                             <CircleDollarSign /> Valor Total Pago: R${' '}
-                            {calculateMonthlyValue(monthlyBills)}
+                            {BRL.format(calculateMonthlyValue(monthlyBills))}
                           </h4>
                         </div>
                       </div>

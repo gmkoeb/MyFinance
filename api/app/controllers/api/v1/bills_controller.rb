@@ -47,7 +47,6 @@ module Api
       end
 
       private
-
       def set_company_and_check_user
         @company = Company.find(params[:company_id])
         render status: :unauthorized, json: { message: I18n.t('auth.wrong_user') } if @company.user != @current_user

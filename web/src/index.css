@@ -1,4 +1,4 @@
-@import '@fontsource/oxygen/index.css';
+@import '@fontsource/rubik/index.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -50,24 +50,6 @@
     width: 100% !important;
     margin-left: auto;
     margin-right: auto;
-  }
-
-  #bill-form-container > form > div{
-    text-align: left;
-  }
-
-  #bill-form-container > form > div > input {
-    width: 100% !important;
-  }
-
-  .edit-bill-form > div > input {
-    width: 100% !important;
-  }
-  
-  .edit-bill-form > div, #bill-form-container{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .checkbox-label{

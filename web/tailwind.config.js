@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily:{
-        oxygen: ['Oxygen', 'serif']
+        rubik: ['Rubik', 'serif']
       }
     },
   },

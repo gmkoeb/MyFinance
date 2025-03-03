@@ -11,7 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource/oxygen": "^5.1.1",
+    "@fontsource-variable/rubik": "^5.2.5",
+    "@fontsource/rubik": "^5.2.5",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
@@ -21,7 +22,8 @@
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-google-charts": "^5.2.1",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -29,6 +31,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
+    "@types/react-transition-group": "^4.4.12",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.13.0",

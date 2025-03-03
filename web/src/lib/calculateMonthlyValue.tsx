@@ -1,10 +1,10 @@
-import { Bill } from "../pages/Home";
+import type { Bill } from '../pages/Home'
 
-export default function calculateMonthlyValue(filteredBills: Bill[]){
-  let totalValue: number = 0
+export default function calculateMonthlyValue(filteredBills: Bill[]) {
+  let totalValue = 0
 
-  filteredBills.forEach(bill => {
+  for (const bill of filteredBills) {
     totalValue += Number(bill.value)
-  })
-  return Number(totalValue.toFixed(2)).toLocaleString("pt-BR")
+  }
+  return Number(totalValue)
 }

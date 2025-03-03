@@ -1,16 +1,35 @@
-import type { FormikHelpers } from 'formik'
-import { CircleDollarSign, HousePlus, NotebookPen, Store } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import {
+  CircleDollarSign,
+  HousePlus,
+  NotebookPen,
+  Store,
+  X,
+} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CSSTransition } from 'react-transition-group'
 import { api } from '../../api/axios'
-import BillForm from '../components/BillForm'
-import BillTable from '../components/BillTable'
-import CompanyForm from '../components/CompanyForm'
+import BillForm from '../components/Home/BillForm'
+import BillTable from '../components/Home/BillTable'
+import CompanyForm from '../components/Home/CompanyForm'
 import calculateMonthlyValue from '../lib/calculateMonthlyValue'
 import { handleDeleteBill } from '../lib/handleDeleteBill'
-
+import { BRL } from '../lib/formatToBRL'
 interface HomeProps {
   isSignedIn: boolean
+}
+
+export interface Bill {
+  id: number
+  name: string
+  billName: string
+  billing_company: string
+  company_id: number
+  value: number | string
+  paid: boolean
+  month: string
+  payment_date: Date
+  recurrent: number | string
 }
 
 export interface Company {
@@ -18,32 +37,30 @@ export interface Company {
   name: string
 }
 
-export interface Bill {
-  id: number
-  name: string | undefined
-  billName: string | undefined
-  billing_company: string | undefined
-  company_id: number | undefined
-  value: number | string | undefined
-  paid: boolean | undefined
-  month: string
-  payment_date: Date | null | undefined
-  recurrent: number | string | undefined
-}
-
 export default function Home({ isSignedIn }: HomeProps) {
   const [companies, setCompanies] = useState<Company[]>([])
   const [showCompanyForm, setShowCompanyForm] = useState<boolean>(false)
-  const [companyErrors, setCompanyErrors] = useState<string[]>([])
   const [bills, setBills] = useState<Bill[]>([])
-  const [billErrors, setBillErrors] = useState<string[]>([])
   const [change, setChange] = useState<boolean>(false)
+  const [showBillForm, setShowBillForm] = useState<number>(-1)
+  const companyFormRef = useRef(null)
+  const billFormRef = useRef(null)
 
   function handleShowCompanyForm() {
+    setShowBillForm(-1)
     if (showCompanyForm) {
       setShowCompanyForm(false)
     } else {
       setShowCompanyForm(true)
+    }
+  }
+
+  function handleShowBillForm(companyId: number) {
+    setShowCompanyForm(false)
+    if (showBillForm !== -1) {
+      setShowBillForm(-1)
+    } else {
+      setShowBillForm(companyId)
     }
   }
 
@@ -62,56 +79,11 @@ export default function Home({ isSignedIn }: HomeProps) {
     setBills(flattenedBills)
   }
 
-  async function handleCompanyCreation(
-    values: Omit<Company, 'id'>,
-    actions: FormikHelpers<{ name: string }>
-  ) {
-    try {
-      const companyData = {
-        company: {
-          name: values.name,
-        },
-      }
-      await api.post('/companies', companyData)
-      actions.setSubmitting(false)
-      setChange(true)
-      actions.resetForm()
-    } catch (error: any) {
-      actions.setSubmitting(false)
-      setCompanyErrors(error.response.data.message)
-    }
-  }
-
-  async function handleBillCreation(
-    company_id: number,
-    values: Partial<Bill>,
-    actions: FormikHelpers<Partial<Bill>>
-  ) {
-    try {
-      const billData = {
-        bill: {
-          name: values.billName,
-          billing_company: values.billing_company,
-          value: values.value?.toString().replace(',', '.'),
-          paid: values.paid,
-          payment_date: values.payment_date,
-          recurrent: values.recurrent,
-        },
-      }
-      await api.post(`/companies/${company_id}/bills`, billData)
-      actions.setSubmitting(false)
-      setChange(true)
-      actions.resetForm()
-    } catch (error: any) {
-      actions.setSubmitting(false)
-      setBillErrors(error.response.data.message)
-    }
-  }
-
   useEffect(() => {
     if (isSignedIn) {
       getCompanies()
     }
+    setShowCompanyForm(false)
     setChange(false)
   }, [change])
 
@@ -125,21 +97,38 @@ export default function Home({ isSignedIn }: HomeProps) {
           <div className="flex items-center justify-center gap-20 w-96 mx-auto mb-10">
             <div className="flex flex-col items-center">
               <button
-                className="text-xl items-center border border-black p-3 font-bold bg-blue-500 text-white rounded-full hover:opacity-80 duration-300 w-96 flex justify-center gap-3"
+                className="text-xl items-center border border-black p-3 bg-blue-500 text-white rounded-lg hover:opacity-80 duration-300 w-96 flex justify-center gap-3"
                 onClick={handleShowCompanyForm}
                 type="button"
               >
                 <p>Cadastrar Empresa </p>
-                <HousePlus width={26} height={26} />
+                <HousePlus className="size-6" />
               </button>
-              {showCompanyForm && (
-                <div className="mb-3 flex flex-col">
-                  <CompanyForm
-                    errors={companyErrors}
-                    handleSubmit={handleCompanyCreation}
-                  />
+              <CSSTransition
+                nodeRef={companyFormRef}
+                in={showCompanyForm}
+                timeout={200}
+                classNames={{
+                  enter: 'opacity-0',
+                  enterActive:
+                    'opacity-100 transition-opacity duration-200 ease-out',
+                  exit: 'opacity-0 duration-200',
+                }}
+                unmountOnExit
+              >
+                <div
+                  ref={companyFormRef}
+                  className="absolute bg-white border border-neutral-400 rounded-lg mt-14"
+                >
+                  <div className="relative">
+                    <X
+                      onClick={() => setShowCompanyForm(false)}
+                      className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute m-1 duration-300"
+                    />
+                  </div>
+                  <CompanyForm setChange={setChange} />
                 </div>
-              )}
+              </CSSTransition>
             </div>
           </div>
           <div className="flex flex-col items-center border-t border-neutral-400">
@@ -148,29 +137,56 @@ export default function Home({ isSignedIn }: HomeProps) {
                 <h2 className="text-4xl font-bold text-center mb-10">
                   Empresas
                 </h2>
-                <div className="flex flex-col w-[1100px] max-2xl:w-[780px]">
+                <div className="flex flex-col min-[1380px]:w-[950px]">
                   {companies.map(company => (
                     <div
                       key={company.id}
                       className="border border-black rounded mb-10 p-4 bg-neutral-100"
                     >
-                      <h3 className="text-3xl font-semibold text-neutral-600 flex items-center justify-center gap-2 mb-4 border-b border-neutral-600 pb-2">
-                        <Store className="mt-0.5 size-7" />
-                        {company.name}
-                      </h3>
-                      <div id="bill-form-container">
-                        <h3 className="text-2xl text-blue-600 font-bold gap-2 mb-2 flex justify-center my-2">
-                          <NotebookPen className="size-7 mt-0.5" />
+                      <div className="flex justify-between border-b border-neutral-400 pb-2">
+                        <div className="flex items-center gap-2 text-blue-600">
+                          <Store className="mt-0.5 size-7" />
+                          <h2 className="text-3xl">{company.name}</h2>
+                        </div>
+                        <button
+                          onClick={() => handleShowBillForm(company.id)}
+                          type="button"
+                          className="text-lg text-neutral-100 bg-blue-500 gap-2 flex justify-center p-2 rounded-lg"
+                        >
+                          <NotebookPen className="size-6 mt-0.5" />
                           Cadastrar Despesa
-                        </h3>
-                        <BillForm
-                          isMonthly={false}
-                          company_id={company.id}
-                          errors={billErrors}
-                          handleSubmit={(values, actions) =>
-                            handleBillCreation(company.id, values, actions)
-                          }
-                        />
+                        </button>
+                      </div>
+                      <div>
+                        <CSSTransition
+                          in={showBillForm === company.id}
+                          timeout={200}
+                          nodeRef={billFormRef}
+                          classNames={{
+                            enter: 'opacity-0',
+                            enterActive:
+                              'opacity-100 transition-opacity duration-200 ease-out',
+                            exit: 'opacity-0 duration-200',
+                          }}
+                          unmountOnExit
+                        >
+                          <div
+                            ref={billFormRef}
+                            className="h-fit w-[400px] bg-white border rounded-lg border-neutral-400 shadow-lg absolute left-1/2 right-1/2 -mt-40 -ml-10"
+                          >
+                            <div className="relative">
+                              <X
+                                onClick={() => setShowBillForm(-1)}
+                                className="text-red-500 border rounded-full size-7 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute m-4 duration-300"
+                              />
+                            </div>
+                            <BillForm
+                              companyName={company.name}
+                              companyId={company.id}
+                              setChange={setChange}
+                            />
+                          </div>
+                        </CSSTransition>
                       </div>
                       <div>
                         <h3 className="text-xl font-bold capitalize my-4 month">
@@ -210,11 +226,11 @@ export default function Home({ isSignedIn }: HomeProps) {
                             </table>
                             <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600 total-price">
                               <CircleDollarSign /> Valor Total Pago: R${' '}
-                              {calculateMonthlyValue(
+                              {BRL.format(calculateMonthlyValue(
                                 bills.filter(
                                   bill => bill.company_id === company.id
                                 )
-                              )}
+                              ))}
                             </h4>
                           </div>
                         )}

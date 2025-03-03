@@ -1,10 +1,11 @@
-import type { FormikHelpers } from 'formik'
+import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/axios'
-import BillForm from '../components/BillForm'
-import Dropdown from '../components/Dropdown'
-import EditBillForm from '../components/EditBillForm'
+import Dropdown from '../components/Monthly/Dropdown'
+import { MonthlyBillFormEdit } from '../components/Monthly/MonthlyBillEditForm'
+import { MonthlyBillForm } from '../components/Monthly/MonthlyBillForm'
 import type { Bill, Company } from './Home'
+import { BRL } from '../lib/formatToBRL'
 
 export default function Monthly() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(-1)
@@ -42,7 +43,7 @@ export default function Monthly() {
           bill: {
             name: bill.name,
             billing_company: bill.billing_company,
-            value: billValue.replace(',', '.'),
+            value: billValue.toString().replace(',', '.'),
             paid: true,
           },
         }
@@ -63,54 +64,6 @@ export default function Monthly() {
     const monthlyBills = result.map(response => response.data)
     const flattenedBills = monthlyBills.flat()
     setMonthlyBills(flattenedBills)
-  }
-
-  async function createMonthlyBill(
-    companyId: number,
-    values: Partial<Bill>,
-    actions: FormikHelpers<Partial<Bill>>
-  ) {
-    try {
-      const monthlyBillData = {
-        monthly_bill: {
-          name: values.billName,
-          billing_company: values.billing_company,
-          payment_date: values.payment_date,
-          value: 0,
-        },
-      }
-
-      await api.post(`/companies/${companyId}/monthly_bills`, monthlyBillData)
-      actions.setSubmitting(false)
-      setChange(true)
-      actions.resetForm()
-    } catch (error: any) {
-      actions.setSubmitting(false)
-      setBillErrors(error.response.data.message)
-    }
-  }
-
-  async function handleBillUpdate(
-    monthlyBillId: number,
-    values: Partial<Bill>,
-    actions: FormikHelpers<Partial<Bill>>
-  ) {
-    try {
-      const monthlyBillData = {
-        monthly_bill: {
-          name: values.billName,
-          billing_company: values.billing_company,
-          payment_date: values.payment_date,
-          value: values.value?.toString().replace(',', '.'),
-        },
-      }
-      api.patch(`/monthly_bills/${monthlyBillId}`, monthlyBillData)
-      actions.setSubmitting(false)
-      setChange(true)
-    } catch (error: any) {
-      actions.setSubmitting(false)
-      setBillErrors(error.response.data.message)
-    }
   }
 
   async function getCompanies() {
@@ -135,10 +88,11 @@ export default function Monthly() {
       </h1>
       {companies.length > 0 ? (
         <div className="mb-20">
-          <div className="bg-neutral-100 w-96 text-center rounded-b-lg border border-neutral-300">
+          <div className="bg-neutral-100 text-center border-b border-neutral-600 mb-10">
             <h2 className="text-lg">Adicionar Mensalidade</h2>
             <select
               className="border rounded-lg text-center my-5"
+              value={selectedCompanyId}
               onChange={e => setSelectedCompanyId(Number(e.target.value))}
             >
               <option value={-1}>Selecione uma empresa</option>
@@ -148,22 +102,21 @@ export default function Monthly() {
                 </option>
               ))}
             </select>
-            {selectedCompanyId !== -1 && (
-              <div className="relative">
-                <div className="absolute w-96">
-                  <BillForm
-                    isMonthly={true}
-                    company_id={selectedCompanyId}
-                    handleSubmit={(values, actions) =>
-                      createMonthlyBill(selectedCompanyId, values, actions)
-                    }
-                    errors={billErrors}
-                    setSelectedCompanyId={setSelectedCompanyId}
-                  />
-                </div>
-              </div>
-            )}
           </div>
+          {selectedCompanyId !== -1 && (
+            <div>
+              <div className="relative">
+                <X
+                  onClick={() => setSelectedCompanyId(-1)}
+                  className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute left-1/4 m-3 duration-300"
+                />
+              </div>
+              <MonthlyBillForm
+                companyId={selectedCompanyId}
+                setChange={setChange}
+              />
+            </div>
+          )}
           {companies.map(company => {
             const filteredBills = monthlyBills.filter(
               bill => company.id === bill.company_id
@@ -196,14 +149,18 @@ export default function Monthly() {
                         />
                       </div>
                       {showEdit && clickedId === bill.id && (
-                        <EditBillForm
-                          setShowEdit={setShowEdit}
-                          bill={bill}
-                          bill_id={bill.id}
-                          errors={billErrors}
-                          handleSubmit={handleBillUpdate}
-                          isMonthly={true}
-                        />
+                        <div className="text-neutral-600 bg-white w-80 z-10 border border-neutral-600 rounded-lg absolute">
+                          <div className="relative">
+                            <X
+                              onClick={() => setShowEdit(false)}
+                              className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute m-2 duration-300 hover:text-white"
+                            />
+                          </div>
+                          <MonthlyBillFormEdit
+                            setChange={setChange}
+                            monthlyBillId={bill.id}
+                          />
+                        </div>
                       )}
                       <div className="w-full">
                         <div className={bill.paid ? 'opacity-45' : ''}>
@@ -212,7 +169,7 @@ export default function Monthly() {
                           </h3>
                           <p>{bill.billing_company}</p>
                           {bill.paid && (
-                            <p>{Number(bill.value)?.toLocaleString('pt-BR')}</p>
+                            <p>{BRL.format(Number(bill.value))}</p>
                           )}
                         </div>
                         {bill.paid ? (
@@ -252,7 +209,7 @@ export default function Monthly() {
             ) : (
               <div
                 key={company.id}
-                className="flex flex-col w-1/2 items-center mb-10"
+                className="flex flex-col w-1/2 items-center mb-10 mx-auto"
               >
                 <h1 className="text-3xl">{company.name}</h1>
                 <h2>Empresa ainda não possui mensalidades cadastradas</h2>

@@ -1,41 +1,84 @@
-import { useNavigate } from "react-router-dom";
-import AccountForm from "../components/AccountForm";
-import { api } from "../../api/axios";
+import { Formik, type FormikHelpers } from 'formik'
 import Cookies from 'js-cookie'
-import { useState } from "react";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { api } from '../../api/axios'
+import { FormInput } from '../components/Form/form-input'
+import { FormRoot } from '../components/Form/form-root'
+
+interface SignInFormValues {
+  password: string
+  email: string
+}
 
 interface ApiResponse {
   token: {
     code: string
-  },
+  }
   user: {
     name: string
   }
 }
 
 interface SignInProps {
-  setIsSignedIn: (isSignedIn: boolean) => void;
+  setIsSignedIn: (isSignedIn: boolean) => void
 }
 
-export default function SignIn({ setIsSignedIn }: SignInProps){
+export default function SignIn({ setIsSignedIn }: SignInProps) {
   const navigate = useNavigate()
+  const [apiErrors, setApiErrors] = useState<string[]>([])
   const initialValues = { email: '', password: '' }
-  const [errors, setErrors] = useState<string[]>([])
 
-  async function handleSubmit(values: any, setSubmitting: (isSubmitting: boolean) => void ){
+  async function handleSubmit(
+    values: SignInFormValues,
+    actions: FormikHelpers<SignInFormValues>
+  ) {
     try {
-      const result = await api.post<ApiResponse>('/users/sign_in', values)
+      const userData = { user: values }
+      const result = await api.post<ApiResponse>('/users/sign_in', userData)
       Cookies.set('token', result.data.token.code)
       Cookies.set('currentUser', result.data.user.name)
       setIsSignedIn(true)
-      setSubmitting(false);
+      actions.setSubmitting(false)
       navigate('/')
       window.location.reload()
-    } catch(error: any) {
-      setErrors(error.response.data.message)
-      setSubmitting(false);
+    } catch (error: any) {
+      setApiErrors(error.response.data.message)
+      actions.setSubmitting(false)
     }
   }
 
-  return <AccountForm initialValues={initialValues} submit={handleSubmit} isSignIn={true} apiErrors={errors} />
+  return (
+    <div className='grid grid-flow-col grid-cols-2'>
+      <img className='h-[80dvh] ml-10 rounded-lg -mt-5' src="/assets/sign_in.jpg" />
+      <Formik
+        initialValues={initialValues}
+        validate={values => {
+          const errors: Partial<SignInFormValues> = {}
+          if (!values.email) {
+            errors.email = 'Campo obrigatório'
+          } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+          ) {
+            errors.email = 'Email inválido'
+          }
+          if (!values.password) {
+            errors.password = 'Campo obrigatório'
+          }
+          return errors
+        }}
+        onSubmit={(values, actions) => {
+          handleSubmit(values, actions)
+        }}
+      >
+        <FormRoot className='flex flex-col justify-center items-center gap-4' apiErrors={apiErrors}>
+          <h2 className='text-xl font-bold'>Entrar</h2>
+          <FormInput id='email' className='w-96 rounded p-1 mt-2 border-neutral-400 border' placeholder='Digite seu email' name="email" inputLabel="Email" type="email" />
+          <FormInput id='password' className='w-96 rounded p-1 mt-2 border-neutral-400 border' placeholder='Digite sua senha' name="password" inputLabel="Senha" type="password" />
+          <button className='border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300' type="submit">Entrar</button>
+          <Link className='w-96 text-sm text-neutral-600 underline' to={'/sign_up'}>Não possui conta? Crie uma aqui</Link>
+        </FormRoot>
+      </Formik>
+    </div>
+  )
 }
