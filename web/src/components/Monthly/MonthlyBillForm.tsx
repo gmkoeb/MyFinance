@@ -1,11 +1,13 @@
 import { Formik, type FormikHelpers } from 'formik'
 import { useState } from 'react'
 import { api } from '../../../api/axios'
+import type { Company } from '../../pages/Home'
 import { FormInput } from '../Form/form-input'
 import { FormRoot } from '../Form/form-root'
 
 interface MonthlyBillFormProps {
-  setChange: React.Dispatch<React.SetStateAction<boolean>>
+  getMonthlyBills: (companies: Company[]) => Promise<void>
+  companies: Company[]
   companyId: number
 }
 
@@ -17,8 +19,9 @@ export interface MonthlyBillValues {
 }
 
 export function MonthlyBillForm({
-  setChange,
   companyId,
+  getMonthlyBills,
+  companies,
 }: MonthlyBillFormProps) {
   const [apiErrors, setApiErrors] = useState<string[]>([])
   async function handleSubmit(
@@ -38,8 +41,8 @@ export function MonthlyBillForm({
 
       await api.post(`/companies/${companyId}/monthly_bills`, monthlyBillData)
       actions.setSubmitting(false)
-      setChange(true)
       actions.resetForm()
+      getMonthlyBills(companies)
     } catch (error: any) {
       actions.setSubmitting(false)
       setApiErrors(error.response.data.message)

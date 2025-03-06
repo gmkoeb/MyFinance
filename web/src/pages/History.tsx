@@ -4,9 +4,9 @@ import Chart from 'react-google-charts'
 import { api } from '../../api/axios'
 import BillTable from '../components/Home/BillTable'
 import calculateMonthlyValue from '../lib/calculateMonthlyValue'
+import { BRL } from '../lib/formatToBRL'
 import { handleDeleteBill } from '../lib/handleDeleteBill'
 import type { Bill, Company } from './Home'
-import { BRL } from '../lib/formatToBRL'
 
 type BillEntry = [string, {}]
 type BillData = BillEntry[]

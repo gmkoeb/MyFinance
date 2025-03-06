@@ -44,8 +44,6 @@ export default function BillForm({
           recurrent: values.recurrent,
         },
       }
-      console.log(billData.bill.value)
-      console.log(values.value)
       await api.post(`/companies/${companyId}/bills`, billData)
       actions.setSubmitting(false)
       setChange(true)
@@ -79,8 +77,8 @@ export default function BillForm({
 
         if (!values.value) {
           errors.value = 'Campo obrigatório'
-        } else if (!/^\d{1,5}\.\d{2}$/.test(values.value)) {
-          errors.value = 'Formato inválido. Exemplo de formato válido: 133.20';
+        } else if (!/^\d+(\.\d{2,})?$/.test(values.value)) {
+          errors.value = 'Formato inválido. Exemplo de formato válido: 133.20'
         }
 
         return errors

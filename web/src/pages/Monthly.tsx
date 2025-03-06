@@ -2,56 +2,50 @@ import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/axios'
 import Dropdown from '../components/Monthly/Dropdown'
-import { MonthlyBillFormEdit } from '../components/Monthly/MonthlyBillEditForm'
+import { MonthlyBillEditForm } from '../components/Monthly/MonthlyBillEditForm'
 import { MonthlyBillForm } from '../components/Monthly/MonthlyBillForm'
-import type { Bill, Company } from './Home'
 import { BRL } from '../lib/formatToBRL'
+import type { Bill, Company } from './Home'
 
 export default function Monthly() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(-1)
-  const [change, setChange] = useState<boolean>(false)
-  const [billErrors, setBillErrors] = useState<string[]>([])
   const [companies, setCompanies] = useState<Company[]>([])
   const [monthlyBills, setMonthlyBills] = useState<Bill[]>([])
   const [billValue, setBillValue] = useState<string>('')
   const [showDropdown, setShowDropdown] = useState<number>(-1)
   const [showEdit, setShowEdit] = useState<boolean>(false)
   const [clickedId, setClickedId] = useState<number>(-1)
-  const buttons = ['Editar', 'Remover']
+  const [filter, setFilter] = useState<string | null>('')
+  const [allBills, setAllBills] = useState<Bill[]>([...monthlyBills])
 
   useEffect(() => {
-    getCompanies()
-    setChange(false)
+    getCompaniesAndBills()
+  }, [])
 
-    if (billErrors.length > 0) {
-      setBillErrors([])
+  useEffect(() => {
+    if (filter && filter.length > 0) {
+      setMonthlyBills(() =>
+        allBills.filter(bill =>
+          bill.name.toLowerCase().includes(filter.toLowerCase())
+        )
+      )
+    } else {
+      setMonthlyBills(allBills)
     }
-
-    if (showEdit) {
-      setShowEdit(false)
-    }
-
-    if (showDropdown !== -1) {
-      setShowDropdown(-1)
-    }
-  }, [change])
+  }, [filter, allBills])
 
   async function payMonthlyBill(companyId: number, bill: Partial<Bill>) {
     if (billValue) {
-      try {
-        const billData = {
-          bill: {
-            name: bill.name,
-            billing_company: bill.billing_company,
-            value: billValue.toString().replace(',', '.'),
-            paid: true,
-          },
-        }
-        api.post(`/companies/${companyId}/create_bill`, billData)
-        setChange(true)
-      } catch (error: any) {
-        setBillErrors(error.response.data.message)
+      const billData = {
+        bill: {
+          name: bill.name,
+          billing_company: bill.billing_company,
+          value: billValue.toString().replace(',', '.'),
+          paid: true,
+        },
       }
+      await api.post(`/companies/${companyId}/create_bill`, billData)
+      getMonthlyBills(companies)
     }
   }
 
@@ -64,21 +58,25 @@ export default function Monthly() {
     const monthlyBills = result.map(response => response.data)
     const flattenedBills = monthlyBills.flat()
     setMonthlyBills(flattenedBills)
+    setAllBills(flattenedBills)
   }
 
-  async function getCompanies() {
+  async function getCompaniesAndBills() {
     const result = await api.get('/companies')
-    setCompanies(result.data)
-    getMonthlyBills(result.data)
+    const companies = result.data
+    setCompanies(companies)
+    getMonthlyBills(companies)
   }
 
   async function handleDeleteMonthlyBill(billId: number) {
-    try {
-      await api.delete(`/monthly_bills/${billId}`)
-      setChange(true)
-    } catch (error) {
-      console.log(error)
-    }
+    await api.delete(`/monthly_bills/${billId}`)
+    getMonthlyBills(companies)
+  }
+
+  function handleShowEdit(id: number) {
+    setClickedId(id)
+    setShowEdit(true)
+    setShowDropdown(-1)
   }
 
   return (
@@ -87,7 +85,7 @@ export default function Monthly() {
         Mensalidades
       </h1>
       {companies.length > 0 ? (
-        <div className="mb-20">
+        <div className="mb-20 flex flex-col">
           <div className="bg-neutral-100 text-center border-b border-neutral-600 mb-10">
             <h2 className="text-lg">Adicionar Mensalidade</h2>
             <select
@@ -112,11 +110,24 @@ export default function Monthly() {
                 />
               </div>
               <MonthlyBillForm
+                companies={companies}
+                getMonthlyBills={getMonthlyBills}
                 companyId={selectedCompanyId}
-                setChange={setChange}
               />
             </div>
           )}
+          <div className="mx-auto w-96 flex flex-col">
+            <label className="px-2" htmlFor="search">
+              Buscar mensalidade
+            </label>
+            <input
+              className=" py-1 px-2 rounded-lg border border-neutral-400 mb-10"
+              name="search"
+              onChange={event => setFilter(event.target.value)}
+              placeholder="Buscar mensalidade"
+              type="text"
+            />
+          </div>
           {companies.map(company => {
             const filteredBills = monthlyBills.filter(
               bill => company.id === bill.company_id
@@ -139,14 +150,29 @@ export default function Monthly() {
                     >
                       <div>
                         <Dropdown
-                          setShowEditForm={setShowEdit}
                           showDropdown={showDropdown}
-                          buttons={buttons}
-                          setClickedId={setClickedId}
                           setShowDropdown={setShowDropdown}
                           billId={bill.id}
-                          handleDeleteMonthlyBill={handleDeleteMonthlyBill}
-                        />
+                        >
+                          <button
+                            type="button"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 text-center w-full"
+                            role="menuitem"
+                            tabIndex={-1}
+                            onClick={() => handleShowEdit(bill.id)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 text-center w-full"
+                            role="menuitem"
+                            tabIndex={-1}
+                            onClick={() => handleDeleteMonthlyBill(bill.id)}
+                          >
+                            Remover
+                          </button>
+                        </Dropdown>
                       </div>
                       {showEdit && clickedId === bill.id && (
                         <div className="text-neutral-600 bg-white w-80 z-10 border border-neutral-600 rounded-lg absolute">
@@ -156,9 +182,12 @@ export default function Monthly() {
                               className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute m-2 duration-300 hover:text-white"
                             />
                           </div>
-                          <MonthlyBillFormEdit
-                            setChange={setChange}
+                          <MonthlyBillEditForm
+                            setShowEdit={setShowEdit}
+                            companies={companies}
+                            getMonthlyBills={getMonthlyBills}
                             monthlyBillId={bill.id}
+                            monthlyBill={bill}
                           />
                         </div>
                       )}
@@ -168,9 +197,7 @@ export default function Monthly() {
                             {bill.name}
                           </h3>
                           <p>{bill.billing_company}</p>
-                          {bill.paid && (
-                            <p>{BRL.format(Number(bill.value))}</p>
-                          )}
+                          {bill.paid && <p>{BRL.format(Number(bill.value))}</p>}
                         </div>
                         {bill.paid ? (
                           <div className="w-full">
@@ -206,7 +233,7 @@ export default function Monthly() {
                   ))}
                 </div>
               </div>
-            ) : (
+            ) : filter?.length === 0 ? (
               <div
                 key={company.id}
                 className="flex flex-col w-1/2 items-center mb-10 mx-auto"
@@ -214,7 +241,7 @@ export default function Monthly() {
                 <h1 className="text-3xl">{company.name}</h1>
                 <h2>Empresa ainda não possui mensalidades cadastradas</h2>
               </div>
-            )
+            ) : undefined
           })}
         </div>
       ) : (

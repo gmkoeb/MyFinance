@@ -1,45 +1,33 @@
 import { Settings } from 'lucide-react'
-import { useEffect } from 'react'
+import { type ComponentProps, useEffect } from 'react'
 
-interface DropdownProps {
-  buttons: string[]
+interface DropdownProps extends ComponentProps<'div'> {
   showDropdown: number
-  setClickedId: React.Dispatch<React.SetStateAction<number>>
   setShowDropdown: React.Dispatch<React.SetStateAction<number>>
-  setShowEditForm: React.Dispatch<React.SetStateAction<boolean>>
+  buttonFunction?: unknown
   billId: number
-  handleDeleteMonthlyBill: (billId: number) => void
 }
 
 export default function Dropdown({
-  buttons,
   showDropdown,
   setShowDropdown,
   billId,
-  setShowEditForm,
-  setClickedId,
-  handleDeleteMonthlyBill,
+  buttonFunction,
+  ...props
 }: DropdownProps) {
   function handleShowDropdown(event: React.MouseEvent<HTMLButtonElement>) {
-    setClickedId(Number(event.currentTarget.id))
     if (showDropdown !== -1) {
       setShowDropdown(-1)
     } else {
-      setShowEditForm(false)
       setShowDropdown(Number(event.currentTarget.id))
     }
-  }
-
-  function handleShowEditForm() {
-    setShowEditForm(true)
-    setShowDropdown(-1)
   }
 
   useEffect(() => {
     if (showDropdown === -1) {
       setShowDropdown(-1)
     }
-  }, [showDropdown])
+  }, [showDropdown, setShowDropdown])
 
   return (
     <div className="relative text-left">
@@ -63,24 +51,7 @@ export default function Dropdown({
           aria-labelledby="menu-button"
           tabIndex={-1}
         >
-          <div className="py-1" role="none">
-            {buttons.map(button => (
-              <button
-                type="button"
-                onClick={() =>
-                  button === 'Editar'
-                    ? handleShowEditForm()
-                    : handleDeleteMonthlyBill(billId)
-                }
-                key={button}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 text-center w-full"
-                role="menuitem"
-                tabIndex={-1}
-              >
-                {button}
-              </button>
-            ))}
-          </div>
+          <div className="py-1" role="banner" {...props} />
         </div>
       )}
     </div>

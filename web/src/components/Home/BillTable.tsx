@@ -1,8 +1,8 @@
 import { SquarePen, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { BRL } from '../../lib/formatToBRL'
 import type { Bill } from '../../pages/Home'
 import EditBillForm from './EditBillForm'
-import { BRL } from '../../lib/formatToBRL'
 
 interface BillTableProps {
   setChange: React.Dispatch<React.SetStateAction<boolean>>
@@ -17,7 +17,7 @@ export default function BillTable({
 }: BillTableProps) {
   const [showEdit, setShowEdit] = useState<boolean>(false)
   const numericalValue = Number(bill.value)
-  
+
   const fixedValue = BRL.format(numericalValue)
   return (
     <tr key={bill.id} className={bill.paid ? 'bg-white' : 'bg-neutral-300'}>

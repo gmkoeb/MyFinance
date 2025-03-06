@@ -77,8 +77,8 @@ export default function EditBillForm({
 
         if (!values.value) {
           errors.value = 'Campo obrigatório'
-        } else if (!/^\d{1,5}\.\d{2}$/.test(values.value)) {
-          errors.value = 'Formato inválido.';
+        } else if (!/^\d+(\.\d{2,})?$/.test(values.value)) {
+          errors.value = 'Formato inválido.'
         }
 
         return errors

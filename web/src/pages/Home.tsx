@@ -13,8 +13,8 @@ import BillForm from '../components/Home/BillForm'
 import BillTable from '../components/Home/BillTable'
 import CompanyForm from '../components/Home/CompanyForm'
 import calculateMonthlyValue from '../lib/calculateMonthlyValue'
-import { handleDeleteBill } from '../lib/handleDeleteBill'
 import { BRL } from '../lib/formatToBRL'
+import { handleDeleteBill } from '../lib/handleDeleteBill'
 interface HomeProps {
   isSignedIn: boolean
 }
@@ -101,7 +101,7 @@ export default function Home({ isSignedIn }: HomeProps) {
                 onClick={handleShowCompanyForm}
                 type="button"
               >
-                <p>Cadastrar Empresa </p>
+                <p>Cadastrar Empresa</p>
                 <HousePlus className="size-6" />
               </button>
               <CSSTransition
@@ -226,11 +226,13 @@ export default function Home({ isSignedIn }: HomeProps) {
                             </table>
                             <h4 className="flex justify-center bg-white border font-bold p-1 gap-2 text-red-600 total-price">
                               <CircleDollarSign /> Valor Total Pago: R${' '}
-                              {BRL.format(calculateMonthlyValue(
-                                bills.filter(
-                                  bill => bill.company_id === company.id
+                              {BRL.format(
+                                calculateMonthlyValue(
+                                  bills.filter(
+                                    bill => bill.company_id === company.id
+                                  )
                                 )
-                              ))}
+                              )}
                             </h4>
                           </div>
                         )}
