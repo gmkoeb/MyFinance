@@ -14,15 +14,15 @@ function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  async function checkTokenValidity() {
-    const response = await api.get('/users/validate_user')
-    if (response.status === 401) {
-      return false
-    }
-
-    return true
-  }
   useEffect(() => {
+    async function checkTokenValidity() {
+      const response = await api.get('/users/validate_user')
+      if (response.status === 401) {
+        return false
+      }
+
+      return true
+    }
     checkTokenValidity()
       .then(valid => {
         setIsSignedIn(valid)

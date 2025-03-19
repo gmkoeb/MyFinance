@@ -45,8 +45,12 @@ export default function SignUp() {
   }
 
   return (
-    <div className='grid grid-flow-col grid-cols-2'>
-      <img className='h-[80dvh] ml-10 rounded-lg -mt-5' src="/assets/sign_up.jpg" />
+    <div className="grid grid-flow-col grid-cols-2">
+      <img
+        alt="Business men writing on a paper with graphs."
+        className="h-[80dvh] ml-10 rounded-lg -mt-5"
+        src="/assets/sign_up.jpg"
+      />
       <Formik
         initialValues={initialValues}
         validate={values => {
@@ -75,19 +79,47 @@ export default function SignUp() {
           handleSubmit(values, actions)
         }}
       >
-        <FormRoot className='flex flex-col items-center justify-center gap-2' apiErrors={apiErrors}>
-          <h1 className='text-xl font-bold'>Crie sua conta</h1>
-          <FormInput className='w-96 mt-1 border rounded py-1 border-neutral-400' name="name" inputLabel="Nome" type="text" />
-          <FormInput className='w-96 mt-1 border rounded py-1 border-neutral-400' name="email" inputLabel="Email" type="email" />
-          <FormInput className='w-96 mt-1 border rounded py-1 border-neutral-400' name="password" inputLabel="Senha" type="password" />
+        <FormRoot
+          className="flex flex-col items-center justify-center gap-2"
+          apiErrors={apiErrors}
+        >
+          <h1 className="text-xl font-bold">Crie sua conta</h1>
           <FormInput
-            className='w-96 border rounded mt-1 py-1 border-neutral-400'
+            className="w-96 mt-1 border rounded py-1 border-neutral-400 px-1"
+            name="name"
+            inputLabel="Nome"
+            type="text"
+          />
+          <FormInput
+            className="w-96 mt-1 border rounded py-1 border-neutral-400 px-1"
+            name="email"
+            inputLabel="Email"
+            type="email"
+          />
+          <FormInput
+            className="w-96 mt-1 border rounded py-1 border-neutral-400 px-1"
+            name="password"
+            inputLabel="Senha"
+            type="password"
+          />
+          <FormInput
+            className="w-96 border rounded mt-1 py-1 border-neutral-400 px-1"
             name="password_confirmation"
             inputLabel="Confirmar Senha"
             type="password"
           />
-          <button className='border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300 mt-2' type="submit">Cadastrar</button>
-          <Link className='w-96 text-sm text-neutral-600 underline' to={'/sign_in'}>Já possui uma conta? Entre aqui</Link>
+          <button
+            className="border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300 mt-2"
+            type="submit"
+          >
+            Cadastrar
+          </button>
+          <Link
+            className="w-96 text-sm text-neutral-600 underline"
+            to={'/sign_in'}
+          >
+            Já possui uma conta? Entre aqui
+          </Link>
         </FormRoot>
       </Formik>
     </div>

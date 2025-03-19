@@ -106,7 +106,7 @@ export default function Monthly() {
               <div className="relative">
                 <X
                   onClick={() => setSelectedCompanyId(-1)}
-                  className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute left-1/4 m-3 duration-300"
+                  className="text-red-500 border rounded-full size-6 p-1 hover:bg-red-400 border-neutral-400 cursor-pointer absolute left-1/4 -top-10 m-3 duration-300"
                 />
               </div>
               <MonthlyBillForm
@@ -117,11 +117,11 @@ export default function Monthly() {
             </div>
           )}
           <div className="mx-auto w-96 flex flex-col">
-            <label className="px-2" htmlFor="search">
+            <label className='px-1' htmlFor="search">
               Buscar mensalidade
             </label>
             <input
-              className=" py-1 px-2 rounded-lg border border-neutral-400 mb-10"
+              className="p-1 rounded-lg border border-neutral-400 mb-10"
               name="search"
               onChange={event => setFilter(event.target.value)}
               placeholder="Buscar mensalidade"

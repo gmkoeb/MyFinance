@@ -26,14 +26,28 @@ export default function History() {
   const [paymentStatus, setPaymentStatus] = useState<string>('all')
   const [change, setChange] = useState<boolean>(false)
 
-  async function getCompanies() {
-    const result = await api.get('/companies')
-    setCompanies(result.data)
-  }
-
   async function getBillsYears(company_id: number) {
     const result = await api.get(`/companies/${company_id}/bills_years`)
     setYears(result.data.years)
+  }
+
+  function handleCompanySelection(company_id: number) {
+    if (company_id === -1) {
+      setSelectedCompanyId(-1)
+      setBills([])
+      setYears([])
+    } else {
+      setSelectedCompanyId(company_id)
+      getBillsYears(company_id)
+    }
+  }
+
+  function handleYearSelection(year: string) {
+    if (selectedYear === year) {
+      setSelectedYear('default')
+    } else {
+      setSelectedYear(year)
+    }
   }
 
   async function getBillsHistory(company_id: number) {
@@ -57,28 +71,8 @@ export default function History() {
       ])
     )
   }
-
-  function handleCompanySelection(company_id: number) {
-    if (company_id === -1) {
-      setSelectedCompanyId(-1)
-      setBills([])
-      setYears([])
-    } else {
-      setSelectedCompanyId(company_id)
-      getBillsYears(company_id)
-    }
-  }
-
-  function handleYearSelection(year: string) {
-    if (selectedYear === year) {
-      setSelectedYear('default')
-    } else {
-      setSelectedYear(year)
-    }
-  }
-
   useEffect(() => {
-    setSelectedYear('default')
+    if (selectedCompanyId !== -1) setSelectedYear('default')
   }, [selectedCompanyId])
 
   useEffect(() => {
@@ -86,9 +80,20 @@ export default function History() {
       getBillsHistory(selectedCompanyId)
       getBillsStatistics(selectedCompanyId)
     } else setBills([])
-  }, [selectedYear, paymentStatus, change])
+  }, [selectedYear, selectedCompanyId, paymentStatus])
 
   useEffect(() => {
+    if (change === true) {
+      getBillsHistory(selectedCompanyId)
+      getBillsStatistics(selectedCompanyId)
+    }
+  }, [change, selectedCompanyId])
+
+  useEffect(() => {
+    async function getCompanies() {
+      const result = await api.get('/companies')
+      setCompanies(result.data)
+    }
     getCompanies()
   }, [])
 

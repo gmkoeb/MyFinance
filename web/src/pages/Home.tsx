@@ -64,28 +64,26 @@ export default function Home({ isSignedIn }: HomeProps) {
     }
   }
 
-  async function getCompanies() {
-    const result = await api.get('/companies')
-    await getBills(result.data)
-    setCompanies(result.data)
-  }
-
-  async function getBills(companies: Company[]) {
-    const result = await Promise.all(
-      companies.map(company => api.get(`/companies/${company.id}/bills`))
-    )
-    const bills = result.map(response => response.data)
-    const flattenedBills = bills.flat()
-    setBills(flattenedBills)
-  }
-
   useEffect(() => {
-    if (isSignedIn) {
+    async function getCompanies() {
+      const result = await api.get('/companies')
+      await getBills(result.data)
+      setCompanies(result.data)
+    }
+    async function getBills(companies: Company[]) {
+      const result = await Promise.all(
+        companies.map(company => api.get(`/companies/${company.id}/bills`))
+      )
+      const bills = result.map(response => response.data)
+      const flattenedBills = bills.flat()
+      setBills(flattenedBills)
+    }
+    if (isSignedIn || change) {
       getCompanies()
     }
     setShowCompanyForm(false)
     setChange(false)
-  }, [change])
+  }, [change, isSignedIn])
 
   return (
     <div>

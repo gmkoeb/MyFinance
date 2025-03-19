@@ -37,10 +37,6 @@
   border: 1px solid #ddd;
 }
 
-.company-row:hover td {
-  background-color: #91bafc !important;
-}
-
 @media (max-width: 1300px) {
   table{
     width: 100% !important;

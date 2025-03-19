@@ -46,10 +46,10 @@ export default function EditBillForm({
           recurrent: values.recurrent,
         },
       }
-      setChange(true)
-      setShowEdit(false)
       await api.patch(`/bills/${billId}`, billData)
       actions.setSubmitting(false)
+      setChange(true)
+      setShowEdit(false)
     } catch (error: any) {
       actions.setSubmitting(false)
       setApiErrors(error)
@@ -60,7 +60,7 @@ export default function EditBillForm({
       initialValues={{
         billName: bill.name,
         billing_company: bill.billing_company,
-        value: Number(bill.value).toLocaleString('pt-BR'),
+        value: 0,
         paid: bill.paid,
         payment_date: new Date(),
       }}
@@ -77,7 +77,7 @@ export default function EditBillForm({
 
         if (!values.value) {
           errors.value = 'Campo obrigatório'
-        } else if (!/^\d+(\.\d{2,})?$/.test(values.value)) {
+        } else if (!/^\d+(\.\d{2,})?$/.test(values.value.toLocaleString('pt-BR'))) {
           errors.value = 'Formato inválido.'
         }
 

@@ -49,8 +49,12 @@ export default function SignIn({ setIsSignedIn }: SignInProps) {
   }
 
   return (
-    <div className='grid grid-flow-col grid-cols-2'>
-      <img className='h-[80dvh] ml-10 rounded-lg -mt-5' src="/assets/sign_in.jpg" />
+    <div className="grid grid-flow-col grid-cols-2">
+      <img
+        alt="Business man writing data on a paper."
+        className="h-[80dvh] ml-10 rounded-lg -mt-5"
+        src="/assets/sign_in.jpg"
+      />
       <Formik
         initialValues={initialValues}
         validate={values => {
@@ -71,12 +75,39 @@ export default function SignIn({ setIsSignedIn }: SignInProps) {
           handleSubmit(values, actions)
         }}
       >
-        <FormRoot className='flex flex-col justify-center items-center gap-4' apiErrors={apiErrors}>
-          <h2 className='text-xl font-bold'>Entrar</h2>
-          <FormInput id='email' className='w-96 rounded p-1 mt-2 border-neutral-400 border' placeholder='Digite seu email' name="email" inputLabel="Email" type="email" />
-          <FormInput id='password' className='w-96 rounded p-1 mt-2 border-neutral-400 border' placeholder='Digite sua senha' name="password" inputLabel="Senha" type="password" />
-          <button className='border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300' type="submit">Entrar</button>
-          <Link className='w-96 text-sm text-neutral-600 underline' to={'/sign_up'}>Não possui conta? Crie uma aqui</Link>
+        <FormRoot
+          className="flex flex-col justify-center items-center gap-4"
+          apiErrors={apiErrors}
+        >
+          <h2 className="text-xl font-bold">Entrar</h2>
+          <FormInput
+            id="email"
+            className="w-96 rounded p-1 mt-2 border-neutral-400 border"
+            placeholder="Digite seu email"
+            name="email"
+            inputLabel="Email"
+            type="email"
+          />
+          <FormInput
+            id="password"
+            className="w-96 rounded p-1 mt-2 border-neutral-400 border"
+            placeholder="Digite sua senha"
+            name="password"
+            inputLabel="Senha"
+            type="password"
+          />
+          <button
+            className="border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300"
+            type="submit"
+          >
+            Entrar
+          </button>
+          <Link
+            className="w-96 text-sm text-neutral-600 underline"
+            to={'/sign_up'}
+          >
+            Não possui conta? Crie uma aqui
+          </Link>
         </FormRoot>
       </Formik>
     </div>

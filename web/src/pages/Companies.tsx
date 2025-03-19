@@ -2,6 +2,7 @@ import { PenBox, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/axios'
 import type { Company } from './Home'
+import { BRL } from '../lib/formatToBRL'
 
 interface CompanyDetails extends Company {
   total_value: number
@@ -14,15 +15,6 @@ export default function Companies() {
   const [name, setName] = useState<string>('')
   const [errors, setErrors] = useState<string[]>([])
   const [change, setChange] = useState<boolean>(false)
-
-  async function getCompanies() {
-    try {
-      const result = await api.get('/companies')
-      setCompanies(result.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   async function handleUpdateCompany(companyId: number) {
     try {
@@ -57,6 +49,14 @@ export default function Companies() {
   }
 
   useEffect(() => {
+    async function getCompanies() {
+      try {
+        const result = await api.get('/companies')
+        setCompanies(result.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
     getCompanies()
   }, [change])
 
@@ -83,18 +83,18 @@ export default function Companies() {
                 <tr className="company-row" key={company.id}>
                   <td className="flex items-center w-full justify-between">
                     {editName === company.id ? (
-                      <div className="w-1/2 mx-auto">
+                      <div className="mx-auto">
                         <div className="flex gap-2 items-center">
                           <input
                             onChange={e => setName(e.target.value)}
-                            className="border w-full rounded-lg px-2"
+                            className="border w-full rounded px-2 py-1"
                             type="text"
                             placeholder="Digite um novo nome"
                           />
                           <button
                             onClick={() => handleUpdateCompany(company.id)}
                             type="submit"
-                            className="border px-4 rounded-lg bg-blue-500 text-white"
+                            className="border p-1 px-3 rounded-lg bg-blue-500 text-white hover:opacity-80 duration-300"
                           >
                             Editar
                           </button>
@@ -126,7 +126,7 @@ export default function Companies() {
                   </td>
                   <td>{company.bills_count}</td>
                   <td>
-                    R$ {Number(company.total_value).toLocaleString('pt-BR')}
+                    {BRL.format(company.total_value)}
                   </td>
                   <td
                     onKeyDown={() => handleCompanyDeletion(company.id)}
