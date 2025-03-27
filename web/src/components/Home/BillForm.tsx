@@ -18,7 +18,6 @@ interface BillFormValues {
   billing_company?: string
   value?: string
   payment_date?: string
-  paid?: boolean
   isRecurrentField?: boolean
   recurrent?: string
 }
@@ -39,7 +38,6 @@ export default function BillForm({
           name: values.billName,
           billing_company: values.billing_company,
           value: values.value,
-          paid: values.paid,
           payment_date: values.payment_date,
           recurrent: values.recurrent,
         },
@@ -59,7 +57,6 @@ export default function BillForm({
         billName: '',
         billing_company: '',
         value: '',
-        paid: true,
         payment_date: new Date(),
         isRecurrentField: false,
         recurrent: '',
@@ -133,13 +130,6 @@ export default function BillForm({
             </div>
 
             <div className="flex gap-4 items-center">
-              <FormInput
-                className="h-4"
-                id={`paid-${companyId}`}
-                type="checkbox"
-                inputLabel="Pago"
-                name="paid"
-              />
               <FormInput
                 checked={values.isRecurrentField}
                 onChange={() =>

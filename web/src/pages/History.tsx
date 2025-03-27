@@ -141,8 +141,6 @@ export default function History() {
                 onChange={e => setPaymentStatus(e.target.value)}
               >
                 <option value="all">Todas</option>
-                <option value="paid">Pagas</option>
-                <option value="unpaid">Não Pagas</option>
               </select>
             </div>
           </div>
@@ -199,7 +197,6 @@ export default function History() {
                                 <th>Nome da conta</th>
                                 <th>Empresa cobradora</th>
                                 <th>Valor</th>
-                                <th>Pagamento</th>
                                 <th>Data de pagamento</th>
                               </tr>
                             </thead>

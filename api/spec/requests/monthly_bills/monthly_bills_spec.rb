@@ -9,7 +9,7 @@ describe 'Monthly Bills API' do
 
       post api_v1_company_monthly_bills_path(company), headers: { Authorization: token },
                                                        params: { monthly_bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
-                                                                                 paid: true, payment_date: Time.zone.now } }
+                                                                                 payment_date: Time.zone.now } }
 
       bill = MonthlyBill.last
       json_response = JSON.parse(response.body)
@@ -44,8 +44,6 @@ describe 'Monthly Bills API' do
       expect(response.status).to eq 200
       expect(json_response.length).to eq 2
       expect(json_response).to eq company.monthly_bills.as_json
-      expect(json_response[0]['paid']).to eq false
-      expect(json_response[1]['paid']).to eq true
     end
   end
 

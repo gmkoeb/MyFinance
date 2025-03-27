@@ -20,7 +20,6 @@ interface BillFormValues {
   billing_company?: string
   value?: string
   payment_date?: string
-  paid?: boolean
 }
 
 export default function EditBillForm({
@@ -41,7 +40,6 @@ export default function EditBillForm({
           name: values.billName,
           billing_company: values.billing_company,
           value: values.value,
-          paid: values.paid,
           payment_date: values.payment_date,
           recurrent: values.recurrent,
         },
@@ -61,7 +59,6 @@ export default function EditBillForm({
         billName: bill.name,
         billing_company: bill.billing_company,
         value: 0,
-        paid: bill.paid,
         payment_date: new Date(),
       }}
       validate={values => {
@@ -124,13 +121,6 @@ export default function EditBillForm({
               }
             />
           </div>
-          <FormInput
-            id={`paid-${billId}`}
-            inputLabel="Pago"
-            type="checkbox"
-            name="paid"
-            className="h-4"
-          />
           <div className="flex items-center gap-3 mt-4">
             <button
               type="submit"

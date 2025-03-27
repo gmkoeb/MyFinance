@@ -53,7 +53,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:name, :billing_company, :value, :paid, :payment_date, :recurrent)
+        params.require(:bill).permit(:name, :billing_company, :value, :payment_date, :recurrent)
       end
 
       def set_bill_and_check_user
@@ -71,13 +71,7 @@ module Api
       def set_year_bills
         query = params[:query]
 
-        @bills = if query == 'paid'
-                   @company.bills.paid.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
-                 elsif query == 'unpaid'
-                   @company.bills.unpaid.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
-                 else
-                   @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
-                 end
+        @bills = @company.bills.where("cast(strftime('%Y', payment_date) as int) = ?", params[:year])
       end
     end
   end

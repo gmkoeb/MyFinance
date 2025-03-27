@@ -11,14 +11,6 @@ class Bill < ApplicationRecord
                          })
   end
 
-  def self.paid
-    Bill.where(paid: true)
-  end
-
-  def self.unpaid
-    Bill.where(paid: false)
-  end
-  
   private
 
   def handle_monthly_destroy
@@ -41,7 +33,7 @@ class Bill < ApplicationRecord
     return unless recurrent
 
     recurrent.times do |counter|
-      RecurringBill.create!(name:, billing_company:, value:, paid: false, bill_id: id,
+      RecurringBill.create!(name:, billing_company:, value:, bill_id: id,
                             company_id:, payment_date: payment_date + (counter + 1).month)
     end
   end

@@ -20,13 +20,12 @@ export default function BillTable({
 
   const fixedValue = BRL.format(numericalValue)
   return (
-    <tr key={bill.id} className={bill.paid ? 'bg-white' : 'bg-neutral-300'}>
+    <tr key={bill.id} className="bg-white">
       {!showEdit ? (
         <>
           <td>{bill.name}</td>
           <td>{bill.billing_company}</td>
           <td>{fixedValue}</td>
-          <td>{bill.paid ? 'Efetuado' : 'Não Efetuado'}</td>
         </>
       ) : (
         <td colSpan={5}>

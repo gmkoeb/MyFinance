@@ -9,7 +9,7 @@ describe 'Bills API' do
 
       post api_v1_company_bills_path(company), headers: { Authorization: token },
                                                params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
-                                                                 paid: true, payment_date: Time.zone.now } }
+                                                                 payment_date: Time.zone.now } }
 
       bill = Bill.last
       json_response = JSON.parse(response.body)
@@ -20,7 +20,6 @@ describe 'Bills API' do
       expect(bill.name).to eq 'Conta de luz'
       expect(bill.billing_company).to eq 'Enel'
       expect(bill.value).to eq 200
-      expect(bill.paid).to eq true
       expect(bill.payment_date.day).to eq Time.zone.now.day
     end
 
@@ -31,7 +30,7 @@ describe 'Bills API' do
 
       post api_v1_company_bills_path(company), headers: { Authorization: token },
                                                params: { bill: { name: 'Cartão de crédito', billing_company: 'Nubank', value: 200,
-                                                                 paid: true, payment_date: Time.zone.now, recurrent: 12 } }
+                                                                 payment_date: Time.zone.now, recurrent: 12 } }
 
       bill = Bill.first
       json_response = JSON.parse(response.body)
@@ -42,13 +41,12 @@ describe 'Bills API' do
       expect(bill.name).to eq 'Cartão de crédito'
       expect(bill.billing_company).to eq 'Nubank'
       expect(bill.value).to eq 200
-      expect(bill.paid).to eq true
       expect(bill.payment_date.day).to eq Time.zone.now.day
     end
 
     it 'cant create a bill while not authenticated' do
       post api_v1_company_bills_path(1), params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
-                                                           paid: true, payment_date: Time.zone.now } }
+                                                           payment_date: Time.zone.now } }
 
       json_response = JSON.parse(response.body)
 
@@ -80,7 +78,7 @@ describe 'Bills API' do
       bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
                                   value: 240, payment_date: Time.zone.now)
 
-      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
+      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name' } }
 
       json_response = JSON.parse(response.body)
       bill.reload
@@ -88,7 +86,6 @@ describe 'Bills API' do
       expect(response.status).to eq 200
       expect(json_response['message']).to eq 'Conta atualizada com sucesso'
       expect(bill.name).to eq 'New Name'
-      expect(bill.paid).to eq true
     end
 
     it 'cant update another user bill' do
@@ -100,7 +97,7 @@ describe 'Bills API' do
       bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
                                   value: 240, payment_date: Time.zone.now)
 
-      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name', paid: 'true' } }
+      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: 'New Name' } }
       bill.reload
       json_response = JSON.parse(response.body)
       expect(json_response['message']).to eq 'Permissão negada'
@@ -114,7 +111,7 @@ describe 'Bills API' do
       bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel',
                                   value: 240, payment_date: Time.zone.now)
 
-      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: '', paid: 'true' } }
+      patch api_v1_bill_path(bill), headers: { Authorization: token }, params: { bill: { name: '' } }
 
       json_response = JSON.parse(response.body)
 
@@ -219,56 +216,29 @@ describe 'Bills API' do
     end
   end
 
-  context 'GET /companies/:company_id/bills_history/:year?query=paid' do
-    it 'returns all paid company bills for specified year' do
+  context 'GET /companies/:company_id/bills_history/:year' do
+    it 'returns all company bills for specified year' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
       past_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                                       paid: true, payment_date: Time.zone.now - 1.year)
+                                       payment_date: Time.zone.now - 1.year)
       present_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                          paid: true, payment_date: Time.zone.now)
-      unpaid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                         paid: false, payment_date: Time.zone.now)
+                                          payment_date: Time.zone.now)
 
-      get "/api/v1/companies/1/bills_history/#{Time.zone.now.year}?query=paid", headers: { Authorization: token }
+      get "/api/v1/companies/1/bills_history/#{Time.zone.now.year}", headers: { Authorization: token }
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
       expect(json_response['bills']).to_not include past_bill.as_json
-      expect(json_response['bills']).to_not include unpaid_bill.as_json
       expect(json_response['bills']).to include present_bill.as_json
       expect(json_response['months']).to include I18n.t('date.month_names')[Time.zone.now.month]
       expect(json_response['company']).to eq 'Casa'
     end
   end
 
-  context 'GET /companies/:company_id/bills_history/:year?query=unpaid' do
-    it 'returns all unpaid company bills for specified year' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
-      token = login_as(user)
-      company = user.companies.create(name: 'Casa')
-      paid_bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                                       paid: true, payment_date: Time.zone.now - 1.month)
-      second_paid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                              paid: true, payment_date: Time.zone.now)
-      unpaid_bill = company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                                         paid: false, payment_date: Time.zone.now)
-
-      get "/api/v1/companies/1/bills_history/#{Time.zone.now.year}?query=unpaid", headers: { Authorization: token }
-      json_response = JSON.parse(response.body)
-
-      expect(response.status).to eq 200
-      expect(json_response['bills']).to_not include paid_bill.as_json
-      expect(json_response['bills']).to_not include second_paid_bill.as_json
-      expect(json_response['bills']).to include unpaid_bill.as_json
-      expect(json_response['months']).to include I18n.t('date.month_names')[Time.zone.now.month]
-      expect(json_response['company']).to eq 'Casa'
-    end
-  end
-
   context 'GET /companies/:company_id/bills_years' do
-    it 'returns all company bills for specified year' do
+    it 'returns each of the years of paid company bills' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
       token = login_as(user)
       company = user.companies.create(name: 'Casa')
@@ -308,55 +278,6 @@ describe 'Bills API' do
       expect(json_response['stats']).to include 'Conta de agua'
       expect(json_response['stats']['Conta de agua']).to eq 100
       expect(json_response['stats']['Conta de luz']).to eq 500
-    end
-  end
-
-  context 'GET /companies/:company_id/bills_statistics/:year?query=paid' do
-    it 'returns all company bills for specified year' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
-      token = login_as(user)
-      company = user.companies.create(name: 'Casa')
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now, paid: true)
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
-                           payment_date: Time.zone.now, paid: true)
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
-                           payment_date: Time.zone.now, paid: false)
-      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                           payment_date: Time.zone.now - 1.year, paid: true)
-
-      get "/api/v1/companies/1/bills_statistics/#{Time.zone.now.year}?query=paid", headers: { Authorization: token }
-      json_response = JSON.parse(response.body)
-
-      expect(response.status).to eq 200
-      expect(json_response['stats']).to include 'Conta de luz'
-      expect(json_response['stats']).to_not include 'Conta de agua'
-      expect(json_response['stats']['Conta de luz']).to eq 500
-    end
-  end
-
-  context 'GET /companies/:company_id/bills_statistics/:year?query=unpaid' do
-    it 'returns all company bills for specified year' do
-      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456')
-      token = login_as(user)
-      company = user.companies.create(name: 'Casa')
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
-                           payment_date: Time.zone.now - 1.year, paid: true)
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 300,
-                           payment_date: Time.zone.now, paid: true)
-      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 3400,
-                           payment_date: Time.zone.now, paid: false)
-      company.bills.create(name: 'Conta de agua', billing_company: 'Sanepar', value: 100,
-                           payment_date: Time.zone.now, paid: false)
-
-      get "/api/v1/companies/1/bills_statistics/#{Time.zone.now.year}?query=unpaid", headers: { Authorization: token }
-      json_response = JSON.parse(response.body)
-
-      expect(response.status).to eq 200
-      expect(json_response['stats']).to include 'Conta de luz'
-      expect(json_response['stats']).to include 'Conta de agua'
-      expect(json_response['stats']['Conta de luz']).to eq 3400
-      expect(json_response['stats']['Conta de agua']).to eq 100
     end
   end
 end

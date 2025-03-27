@@ -63,7 +63,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:name, :value, :billing_company, :paid)
+        params.require(:bill).permit(:name, :value, :billing_company)
       end
 
       def set_bill_stats(bill)

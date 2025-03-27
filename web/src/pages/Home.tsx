@@ -201,7 +201,6 @@ export default function Home({ isSignedIn }: HomeProps) {
                                   <th>Nome da conta</th>
                                   <th>Empresa cobradora</th>
                                   <th>Valor</th>
-                                  <th>Pagamento</th>
                                   <th>Data de pagamento</th>
                                 </tr>
                               </thead>
