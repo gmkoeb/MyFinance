@@ -16,4 +16,27 @@ RSpec.describe Bill, type: :model do
       end
     end
   end
+
+  describe '#deduct_from_monthly_limit' do
+    it 'creating a bill with use_limit deducts from user monthly limit' do
+      user = User.create(name: 'Test', email: 'test@email.com', password: '123456')
+      company = user.companies.create(name: 'Test')
+      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450, month: Time.zone.now)
+
+      company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
+                           payment_date: Time.zone.now, use_limit: true)
+
+      expect(monthly_limit.limit).to eq 250
+    end
+  end
+
+  it 'cannot be created if user have not set a monthly limit' do
+    user = User.create(name: 'Test', email: 'test@email.com', password: '123456')
+    company = user.companies.create(name: 'Test')
+
+    bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
+                                payment_date: Time.zone.now, use_limit: true)
+
+    expect(bill.errors.full_messages).to include 'Usuário não cadastrou um limite mensal'
+  end
 end

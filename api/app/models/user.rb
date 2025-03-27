@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   has_secure_password
   has_many :companies, dependent: :destroy
-
+  has_one :monthly_limit, dependent: :destroy
   validates :email, uniqueness: true
   validates :name, :email, :password, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
