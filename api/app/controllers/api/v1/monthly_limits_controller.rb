@@ -28,8 +28,8 @@ module Api
         monthly_limit = MonthlyLimit.find(params[:id])
         return unless monthly_limit.update(monthly_limit_params)
 
-          render status: :ok,
-                 json: { message: I18n.t('monthly_limit.crud.update_success') }
+        render status: :ok,
+               json: { message: I18n.t('monthly_limit.crud.update_success') }
       end
 
       private
@@ -37,8 +37,8 @@ module Api
       def can_only_have_one_monthly_limit
         return if @current_user.monthly_limit.blank?
 
-          render status: :bad_request,
-                 json: { message: 'Usuário já possui um limite mensal cadastrado' }
+        render status: :bad_request,
+               json: { message: 'Usuário já possui um limite mensal cadastrado' }
       end
 
       def monthly_limit_params
