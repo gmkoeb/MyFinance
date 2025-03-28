@@ -4,7 +4,7 @@ module Api
       before_action :authorize_user
       before_action :can_only_have_one_monthly_limit, only: %w[create]
 
-      def index 
+      def index
         render status: :ok, json: @current_user.monthly_limit
       end
 
@@ -26,13 +26,19 @@ module Api
 
       def update
         monthly_limit = MonthlyLimit.find(params[:id])
-        render status: :ok, json: { message: I18n.t('monthly_limit.crud.update_success') } if monthly_limit.update(monthly_limit_params)
+        return unless monthly_limit.update(monthly_limit_params)
+
+          render status: :ok,
+                 json: { message: I18n.t('monthly_limit.crud.update_success') }
       end
 
       private
 
       def can_only_have_one_monthly_limit
-        return render status: :bad_request, json: { message: "Usuário já possui um limite mensal cadastrado"} if @current_user.monthly_limit.present?
+        return if @current_user.monthly_limit.blank?
+
+          render status: :bad_request,
+                 json: { message: 'Usuário já possui um limite mensal cadastrado' }
       end
 
       def monthly_limit_params

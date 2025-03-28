@@ -1,8 +1,9 @@
 class MonthlyLimit < ApplicationRecord
   belongs_to :user
 
-  after_validation :set_original_limit, on: [:create, :update]
+  after_validation :set_original_limit, on: %i[create update]
   validates :name, :limit, presence: true
+
   private
 
   def set_original_limit

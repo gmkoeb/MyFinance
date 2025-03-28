@@ -32,9 +32,9 @@ describe 'Bills API' do
                                                params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
                                                                  payment_date: Time.zone.now, use_limit: true } }
 
-      bill = Bill.last
+      Bill.last
       json_response = JSON.parse(response.body)
-      
+
       expect(response.status).to eq 400
       expect(json_response['message']).to include 'Usuário não cadastrou um limite mensal'
     end

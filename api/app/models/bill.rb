@@ -41,7 +41,7 @@ class Bill < ApplicationRecord
 
   def deduct_from_monthly_limit
     return unless use_limit
-    
+
     monthly_limit = company.user.monthly_limit
 
     monthly_limit.update(limit: monthly_limit.limit - value)
@@ -51,6 +51,6 @@ class Bill < ApplicationRecord
     return unless use_limit
 
     user = company.user
-    errors.add(:base, "Usuário não cadastrou um limite mensal") if user.monthly_limit.nil?
+    errors.add(:base, 'Usuário não cadastrou um limite mensal') if user.monthly_limit.nil?
   end
 end
