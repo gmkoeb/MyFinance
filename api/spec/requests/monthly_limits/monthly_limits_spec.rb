@@ -7,8 +7,7 @@ describe 'Monthly Limits API' do
       token = login_as(user)
 
       post api_v1_monthly_limits_path, headers: { Authorization: token },
-                                       params: { monthly_limit: { name: 'Limite da Academia', limit: 4000,
-                                                 month: Time.zone.now } }
+                                       params: { monthly_limit: { name: 'Limite da Academia', limit: 4000 } }
 
       json_response = JSON.parse(response.body)
       monthly_limit = MonthlyLimit.last
@@ -19,17 +18,15 @@ describe 'Monthly Limits API' do
       expect(monthly_limit.name).to eq 'Limite da Academia'
       expect(monthly_limit.user).to eq user
       expect(monthly_limit.limit).to eq 4000
-      expect(monthly_limit.month.month).to eq Time.zone.now.month
     end
 
     it 'cant create another monthly limit if already has one' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450, month: Time.zone.now)
+      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
       token = login_as(user)
 
       post api_v1_monthly_limits_path, headers: { Authorization: token },
-                                       params: { monthly_limit: { name: 'Limite da Academia', limit: 4000,
-                                                 month: Time.zone.now } }
+                                       params: { monthly_limit: { name: 'Limite da Academia', limit: 4000 } }
 
       json_response = JSON.parse(response.body)
       
@@ -41,7 +38,7 @@ describe 'Monthly Limits API' do
   context 'get /monthly_limits' do
     it 'returns user monthly limit' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450, month: Time.zone.now)
+      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
       token = login_as(user)
 
       get api_v1_monthly_limits_path, headers: { Authorization: token }
@@ -57,7 +54,7 @@ describe 'Monthly Limits API' do
   context 'delete /monthly_limits/:id' do
     it 'deletes specified monthly limit' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450, month: Time.zone.now)
+      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
       token = login_as(user)
 
       delete api_v1_monthly_limit_path(monthly_limit), headers: { Authorization: token }
@@ -73,7 +70,7 @@ describe 'Monthly Limits API' do
   context 'patch /monthly_limits/:id' do
     it 'updates specified monthly limit' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450, month: Time.zone.now)
+      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
       token = login_as(user)
 
       patch api_v1_monthly_limit_path(monthly_limit), headers: { Authorization: token },
