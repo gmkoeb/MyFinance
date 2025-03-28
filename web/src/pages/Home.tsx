@@ -15,6 +15,7 @@ import CompanyForm from '../components/Home/CompanyForm'
 import calculateMonthlyValue from '../lib/calculateMonthlyValue'
 import { BRL } from '../lib/formatToBRL'
 import { handleDeleteBill } from '../lib/handleDeleteBill'
+import PageHeader from '../components/PageHeader'
 interface HomeProps {
   isSignedIn: boolean
 }
@@ -89,13 +90,11 @@ export default function Home({ isSignedIn }: HomeProps) {
     <div>
       {isSignedIn ? (
         <div>
-          <h1 className="w-full text-left bg-neutral-100 h-20 mb-10 text-4xl font-bold items-center flex pl-10 border-b border-neutral-300 text-neutral-600">
-            Página Inicial
-          </h1>
+          <PageHeader title='Página Inicial'/>
           <div className="flex items-center justify-center gap-20 w-96 mx-auto mb-10">
             <div className="flex flex-col items-center">
               <button
-                className="text-xl items-center border border-black p-3 bg-blue-500 text-white rounded-lg hover:opacity-80 duration-300 w-96 flex justify-center gap-3"
+                className="mt-10 text-xl items-center border border-black p-3 bg-blue-500 text-white rounded-lg hover:opacity-80 duration-300 w-96 flex justify-center gap-3"
                 onClick={handleShowCompanyForm}
                 type="button"
               >
@@ -116,7 +115,7 @@ export default function Home({ isSignedIn }: HomeProps) {
               >
                 <div
                   ref={companyFormRef}
-                  className="absolute bg-white border border-neutral-400 rounded-lg mt-14"
+                  className="absolute bg-white border border-neutral-400 rounded-lg mt-24"
                 >
                   <div className="relative">
                     <X

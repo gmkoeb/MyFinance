@@ -7,6 +7,7 @@ import calculateMonthlyValue from '../lib/calculateMonthlyValue'
 import { BRL } from '../lib/formatToBRL'
 import { handleDeleteBill } from '../lib/handleDeleteBill'
 import type { Bill, Company } from './Home'
+import PageHeader from '../components/PageHeader'
 
 type BillEntry = [string, {}]
 type BillData = BillEntry[]
@@ -101,11 +102,7 @@ export default function History() {
     <div>
       {companies.length > 0 ? (
         <>
-          <div className="flex justify-center items-center">
-            <h1 className="w-full text-left pl-10 bg-neutral-100 h-20 text-4xl font-bold items-center flex border-b border-neutral-300 text-neutral-600">
-              Histórico
-            </h1>
-          </div>
+          <PageHeader title='Histórico'/>
           <div>
             <h2 className="text-2xl mx-28 mb-6 font-semibold mt-5">
               Escolha uma empresa e um ano

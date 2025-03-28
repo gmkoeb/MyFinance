@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../../api/axios'
 import type { Company } from './Home'
 import { BRL } from '../lib/formatToBRL'
+import PageHeader from '../components/PageHeader'
 
 interface CompanyDetails extends Company {
   total_value: number
@@ -62,9 +63,7 @@ export default function Companies() {
 
   return (
     <div>
-      <h1 className="w-full text-left pl-10 bg-neutral-100 h-20 text-4xl font-bold items-center flex border-b border-neutral-300 text-neutral-600">
-        Minhas Empresas
-      </h1>
+      <PageHeader title='Minhas Empresas'/>
       {companies.length > 0 ? (
         <>
           <h2 className="w-[75%] mx-auto text-2xl mt-5 font-semibold">

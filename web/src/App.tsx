@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Monthly from './pages/Monthly'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import MonthlyLimit from './pages/MonthlyLimit'
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
@@ -49,6 +50,7 @@ function App() {
       children: [
         { path: '/history', element: <History /> },
         { path: '/monthly', element: <Monthly /> },
+        { path: '/monthly_limit', element: <MonthlyLimit /> },
         { path: '/companies', element: <Companies /> },
       ],
     },

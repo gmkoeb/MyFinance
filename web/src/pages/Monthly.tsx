@@ -6,6 +6,7 @@ import { MonthlyBillEditForm } from '../components/Monthly/MonthlyBillEditForm'
 import { MonthlyBillForm } from '../components/Monthly/MonthlyBillForm'
 import { BRL } from '../lib/formatToBRL'
 import type { Bill, Company } from './Home'
+import PageHeader from '../components/PageHeader'
 
 export default function Monthly() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(-1)
@@ -81,9 +82,7 @@ export default function Monthly() {
 
   return (
     <div>
-      <h1 className="w-full text-left pl-10 bg-neutral-100 h-20 text-4xl font-bold items-center flex border-b border-neutral-300 text-neutral-600">
-        Mensalidades
-      </h1>
+      <PageHeader title='Mensalidades'/>
       {companies.length > 0 ? (
         <div className="mb-20 flex flex-col">
           <div className="bg-neutral-100 text-center border-b border-neutral-600 mb-10">

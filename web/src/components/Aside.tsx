@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { CalendarClock, History, Home, LogOut, Store } from 'lucide-react'
+import { CalendarClock, History, Home, LogOut, Store, Wallet } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AsideLink } from './AsideLink'
@@ -42,6 +42,10 @@ export default function Aside() {
         <AsideLink to="/companies">
           <Store className="mt-0.5 size-6" />
           Minhas Empresas
+        </AsideLink>
+        <AsideLink to="/monthly_limit">
+          <Wallet className="mt-0.5 size-6" />
+          Limite Mensal
         </AsideLink>
       </div>
       <div className="flex flex-col justify-center gap-2 text-center">
