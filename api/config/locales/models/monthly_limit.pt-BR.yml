@@ -1,0 +1,14 @@
+pt-BR:
+  activerecord:
+    models:
+      monthly_limit: Limite mensal
+    attributes:
+      monthly_limit:
+        name: 'Nome do limite'
+        limit: 'Valor limite'
+        month: 'Mês de validade'
+  monthly_limit:
+    crud:
+      create_success: 'Limite mensal criado com sucesso'
+      delete: 'Limite mensal excluído com sucesso'
+      update_success: 'Limite mensal atualizado com sucesso'

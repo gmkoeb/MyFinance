@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       end
       resources :bills, only: %w[update destroy]
       resources :monthly_bills, only: %w[update destroy]
+      resources :monthly_limits
     end
   end
 

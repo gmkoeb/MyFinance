@@ -53,7 +53,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:name, :billing_company, :value, :payment_date, :recurrent)
+        params.require(:bill).permit(:name, :billing_company, :value, :payment_date, :recurrent, :use_limit)
       end
 
       def set_bill_and_check_user

@@ -23,6 +23,22 @@ describe 'Bills API' do
       expect(bill.payment_date.day).to eq Time.zone.now.day
     end
 
+    it 'fails to create a bill with use_limit if user has no limit registered' do
+      user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
+      company = user.companies.create(name: 'Casa')
+      token = login_as(user)
+
+      post api_v1_company_bills_path(company), headers: { Authorization: token },
+                                               params: { bill: { name: 'Conta de luz', billing_company: 'Enel', value: 200,
+                                                                 payment_date: Time.zone.now, use_limit: true } }
+
+      bill = Bill.last
+      json_response = JSON.parse(response.body)
+      
+      expect(response.status).to eq 400
+      expect(json_response['message']).to include 'Usuário não cadastrou um limite mensal'
+    end
+
     it 'creates a recurrent bill with success' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
       company = user.companies.create(name: 'Casa')
