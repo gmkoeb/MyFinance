@@ -46,6 +46,9 @@ export default function BillForm({
           use_limit: values.useLimit,
         },
       }
+      if (isLimitPage){
+        billData.bill.use_limit = true
+      }
       await api.post(`/companies/${companyId}/bills`, billData)
       actions.setSubmitting(false)
       setChange(true)

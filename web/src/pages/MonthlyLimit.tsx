@@ -51,7 +51,7 @@ export default function MonthlyLimit(){
       setSelectedCompanyName('')
     } else {
       setSelectedCompanyId(companyId)
-      setSelectedCompanyName(companyName.replace('Escolha uma empresa', '').trim())
+      setSelectedCompanyName(companyName)
     }
   }
 
@@ -98,7 +98,12 @@ export default function MonthlyLimit(){
                 <h2 className="text-center text-lg">Cadastrar despesa no limite</h2>
                 <select
                   className="rounded-lg py-1 w-1/2 border border-neutral-300 px-2 mx-auto" 
-                  onChange={e => handleCompanySelection(Number(e.target.value), e.target.innerText)}
+                  
+                  onChange={e => {
+                    const selectedIndex = e.target.selectedIndex;
+                    const selectedText = e.target.options[selectedIndex].text;
+                    handleCompanySelection(Number(e.target.value), selectedText)
+                  }}
                 >
                   <option value={-1}>Escolha uma empresa</option>
                   {companies.map(company => (
