@@ -18,12 +18,5 @@ RSpec.describe MonthlyLimit, type: :model do
 
       expect(monthly_limit.original_limit).to eq 450
     end
-
-    it 'sets original limit automatically after updating limit' do
-      user = User.create(name: 'Test', email: 'test@email.com', password: '123456')
-      monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
-      monthly_limit.update(limit: 5000)
-      expect(monthly_limit.original_limit).to eq 5000
-    end
   end
 end

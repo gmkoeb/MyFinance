@@ -37,6 +37,6 @@ RSpec.describe Bill, type: :model do
     bill = company.bills.create(name: 'Conta de luz', billing_company: 'Copel', value: 200,
                                 payment_date: Time.zone.now, use_limit: true)
 
-    expect(bill.errors.full_messages).to include 'Usuário não cadastrou um limite mensal'
+    expect(bill.errors.full_messages).to include 'Você não cadastrou um limite mensal'
   end
 end

@@ -36,7 +36,7 @@ describe 'Bills API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 400
-      expect(json_response['message']).to include 'Usuário não cadastrou um limite mensal'
+      expect(json_response['message']).to include 'Você não cadastrou um limite mensal'
     end
 
     it 'creates a recurrent bill with success' do

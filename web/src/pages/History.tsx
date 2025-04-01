@@ -100,9 +100,9 @@ export default function History() {
 
   return (
     <div>
+      <PageHeader title='Histórico'/>
       {companies.length > 0 ? (
         <>
-          <PageHeader title='Histórico'/>
           <div>
             <h2 className="text-2xl mx-28 mb-6 font-semibold mt-5">
               Escolha uma empresa e um ano

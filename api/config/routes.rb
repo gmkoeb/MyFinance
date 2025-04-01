@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resources :bills, only: %w[update destroy]
       resources :monthly_bills, only: %w[update destroy]
       resources :monthly_limits
+      get '/monthly_limit_bills', to: 'monthly_limits#monthly_limit_bills', controller: 'monthly_limits'
     end
   end
 

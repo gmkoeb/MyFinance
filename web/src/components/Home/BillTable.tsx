@@ -20,7 +20,7 @@ export default function BillTable({
 
   const fixedValue = BRL.format(numericalValue)
   return (
-    <tr key={bill.id} className="bg-white">
+    <tr key={bill.id} className={bill.use_limit ? "bg-yellow-200" : "bg-white"}>
       {!showEdit ? (
         <>
           <td>{bill.name}</td>

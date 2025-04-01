@@ -12,6 +12,10 @@ class Bill < ApplicationRecord
                          })
   end
 
+  def self.using_limit
+    Bill.where(use_limit: true)
+  end
+
   private
 
   def handle_monthly_destroy
@@ -43,7 +47,7 @@ class Bill < ApplicationRecord
     return unless use_limit
 
     monthly_limit = company.user.monthly_limit
-
+    
     monthly_limit.update(limit: monthly_limit.limit - value)
   end
 
@@ -51,6 +55,6 @@ class Bill < ApplicationRecord
     return unless use_limit
 
     user = company.user
-    errors.add(:base, 'Usuário não cadastrou um limite mensal') if user.monthly_limit.nil?
+    errors.add(:base, 'Você não cadastrou um limite mensal') if user.monthly_limit.nil?
   end
 end

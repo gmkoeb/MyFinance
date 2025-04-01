@@ -31,6 +31,8 @@ export interface Bill {
   month: string
   payment_date: Date
   recurrent: number | string
+  useLimit:boolean
+  use_limit:boolean
 }
 
 export interface Company {
