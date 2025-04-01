@@ -18,6 +18,13 @@ class Bill < ApplicationRecord
 
   private
 
+  def handle_limited_destroy
+    return unless use_limit
+
+    monthly_limit = company.user.monthly_limit
+    monthly_limit.update(limit: monthly_limit.limit + bill.value)
+  end
+
   def handle_monthly_destroy
     return unless monthly
 
