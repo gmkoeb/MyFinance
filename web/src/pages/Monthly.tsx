@@ -44,6 +44,7 @@ export default function Monthly() {
           value: billValue.toString().replace(',', '.'),
           paid: true,
         },
+        monthly: true
       }
       await api.post(`/companies/${companyId}/create_bill`, billData)
       getMonthlyBills(companies)

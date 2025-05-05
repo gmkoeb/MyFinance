@@ -29,6 +29,10 @@ module Api
       def create
         bill = @company.bills.build(bill_params)
         bill.type = 'Bill'
+        if params.require[:monthly]
+          monthly_bill = @company.monthly_bills.where(name: bill.name).first
+          monthly_bill.update(payment_date: Time.zone.now)
+        end
         return render status: :created, json: { message: I18n.t('bill.crud.create_success') } if bill.save
 
         render status: :bad_request,
