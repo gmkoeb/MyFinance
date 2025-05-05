@@ -29,7 +29,7 @@ module Api
       def create
         bill = @company.bills.build(bill_params)
         bill.type = 'Bill'
-        if params.require[:monthly]
+        if params[:monthly].present?
           monthly_bill = @company.monthly_bills.where(name: bill.name).first
           monthly_bill.update(payment_date: Time.zone.now)
         end
