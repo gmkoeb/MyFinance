@@ -6,9 +6,11 @@ module Api
         def sign_in
           user = User.find_by(email: authentication_params[:email])
 
+          token_expiration_time = authentication_params[:remember_me] ? 1440.hours.to_i : 24.hours.to_i 
+
           if user&.authenticate(authentication_params[:password])
             token = JsonWebToken.encode(user_id: user.id)
-            render json: { token: { code: token, exp: 24.hours.to_i },
+            render json: { token: { code: token, exp: token_expiration_time },
                            user: { name: user.name } }, status: :ok
           else
             render json: { message: [I18n.t('auth.wrong_data')] }, status: :unauthorized
@@ -20,7 +22,7 @@ module Api
         private
 
         def authentication_params
-          params.require(:user).permit(:email, :password)
+          params.require(:user).permit(:email, :password, :remember_me)
         end
       end
     end

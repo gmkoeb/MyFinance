@@ -1,4 +1,4 @@
-import { Formik, type FormikHelpers } from 'formik'
+import { Field, Formik, type FormikHelpers } from 'formik'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +9,7 @@ import { FormRoot } from '../components/Form/form-root'
 interface SignInFormValues {
   password: string
   email: string
+  remember_me: boolean
 }
 
 interface ApiResponse {
@@ -27,7 +28,7 @@ interface SignInProps {
 export default function SignIn({ setIsSignedIn }: SignInProps) {
   const navigate = useNavigate()
   const [apiErrors, setApiErrors] = useState<string[]>([])
-  const initialValues = { email: '', password: '' }
+  const initialValues = { email: '', password: '', remember_me: false }
 
   async function handleSubmit(
     values: SignInFormValues,
@@ -96,6 +97,10 @@ export default function SignIn({ setIsSignedIn }: SignInProps) {
             inputLabel="Senha"
             type="password"
           />
+          <div className='flex items-center w-96'>
+            <Field className='mr-3' name='remember_me' id='remember_me' type="checkbox" />
+            <label htmlFor="remember_me">Lembrar-me</label>
+          </div>
           <button
             className="border bg-blue-500 text-neutral-100 w-96 rounded-lg py-1 hover:opacity-80 duration-300"
             type="submit"
