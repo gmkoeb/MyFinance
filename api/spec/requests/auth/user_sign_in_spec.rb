@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'User logs in' do
   it 'with success' do
     User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-    allow(JsonWebToken).to receive(:encode).with(user_id: 1).and_return('123456')
+    allow(JsonWebToken).to receive(:encode).with({ user_id: 1 }, a_value_within(5.seconds).of(1.day.from_now)).and_return('123456')
     post api_v1_users_sign_in_path, params: { user: { email: 'test@test.com', password: '123456' } }
 
     json_response = JSON.parse(response.body)
@@ -25,7 +25,7 @@ describe 'User logs in' do
 
   it 'with remember me activated' do
     User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
-    allow(JsonWebToken).to receive(:encode).with(user_id: 1).and_return('123456')
+    allow(JsonWebToken).to receive(:encode).with({ user_id: 1 }, a_value_within(5.seconds).of(60.days.from_now)).and_return('123456')
     post api_v1_users_sign_in_path, params: { user: { email: 'test@test.com', password: '123456', remember_me: true } }
 
     json_response = JSON.parse(response.body)

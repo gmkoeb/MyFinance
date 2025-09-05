@@ -9,7 +9,7 @@ module Api
           token_expiration_time = authentication_params[:remember_me] ? 60 : 1 
 
           if user&.authenticate(authentication_params[:password])
-            token = JsonWebToken.encode(user_id: user.id)
+            token = JsonWebToken.encode({ user_id: user.id }, token_expiration_time.days.from_now)
             render json: { token: { code: token, exp: token_expiration_time },
                            user: { name: user.name } }, status: :ok
           else
