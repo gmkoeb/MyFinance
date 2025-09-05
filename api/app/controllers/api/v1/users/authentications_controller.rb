@@ -6,7 +6,7 @@ module Api
         def sign_in
           user = User.find_by(email: authentication_params[:email])
 
-          token_expiration_time = authentication_params[:remember_me] ? 1440.hours.to_i : 24.hours.to_i 
+          token_expiration_time = authentication_params[:remember_me] ? 60 : 1 
 
           if user&.authenticate(authentication_params[:password])
             token = JsonWebToken.encode(user_id: user.id)

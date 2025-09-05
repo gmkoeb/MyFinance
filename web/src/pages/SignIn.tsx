@@ -15,6 +15,7 @@ interface SignInFormValues {
 interface ApiResponse {
   token: {
     code: string
+    exp: number
   }
   user: {
     name: string
@@ -37,8 +38,8 @@ export default function SignIn({ setIsSignedIn }: SignInProps) {
     try {
       const userData = { user: values }
       const result = await api.post<ApiResponse>('/users/sign_in', userData)
-      Cookies.set('token', result.data.token.code)
-      Cookies.set('currentUser', result.data.user.name)
+      Cookies.set('token', result.data.token.code, { expires: result.data.token.exp })
+      Cookies.set('currentUser', result.data.user.name, { expires: result.data.token.exp })
       setIsSignedIn(true)
       actions.setSubmitting(false)
       navigate('/')

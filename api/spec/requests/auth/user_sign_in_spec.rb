@@ -9,7 +9,7 @@ describe 'User logs in' do
     json_response = JSON.parse(response.body)
     expect(response.status).to eq 200
     expect(json_response['token']['code']).to eq '123456'
-    expect(json_response['token']['exp']).to eq 24.hours.to_i
+    expect(json_response['token']['exp']).to eq 1
     expect(json_response['user']['name']).to eq 'Gabriel'
   end
 
@@ -31,7 +31,7 @@ describe 'User logs in' do
     json_response = JSON.parse(response.body)
     expect(response.status).to eq 200
     expect(json_response['token']['code']).to eq '123456'
-    expect(json_response['token']['exp']).to eq 1440.hours.to_i
+    expect(json_response['token']['exp']).to eq 60
     expect(json_response['user']['name']).to eq 'Gabriel'
   end
 end
