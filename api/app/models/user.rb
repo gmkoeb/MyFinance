@@ -12,6 +12,5 @@ class User < ApplicationRecord
 
   private
 
-  def bills_using_limit
-  end
+  def bills_using_limit; end
 end

@@ -9,7 +9,7 @@ module Api
         if @current_user.monthly_limit
           render status: :ok, json: @current_user.monthly_limit
         else
-          render status: :ok, json: {id: 0}
+          render status: :ok, json: { id: 0 }
         end
       end
 
@@ -49,14 +49,15 @@ module Api
 
       def current_month_limited_bills
         @current_user.bills
-        .using_limit
-        .where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
-        .order(payment_date: :asc)
+                     .using_limit
+                     .where(payment_date: Time.zone.now.at_beginning_of_month..Time.zone.now.at_end_of_month)
+                     .order(payment_date: :asc)
       end
 
       def update_limit
         monthly_limit = @current_user.monthly_limit
         return unless monthly_limit
+
         original_limit = monthly_limit.original_limit
         bills = current_month_limited_bills
         if bills.empty?

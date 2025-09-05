@@ -54,7 +54,7 @@ class Bill < ApplicationRecord
     return unless use_limit
 
     monthly_limit = company.user.monthly_limit
-    
+
     monthly_limit.update(limit: monthly_limit.limit - value)
   end
 

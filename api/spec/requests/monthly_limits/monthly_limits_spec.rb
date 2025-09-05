@@ -54,8 +54,8 @@ describe 'Monthly Limits API' do
       user = User.create(name: 'Gabriel', email: 'test@test.com', password: '123456', password_confirmation: '123456')
       monthly_limit = user.create_monthly_limit(name: 'Limite da academia', limit: 450)
       token = login_as(user)
-      
-      monthly_limit.update(limit: 450 - 200);
+
+      monthly_limit.update(limit: 450 - 200)
 
       get api_v1_monthly_limits_path, headers: { Authorization: token }
 
@@ -126,7 +126,7 @@ describe 'Monthly Limits API' do
       json_response = JSON.parse(response.body)
 
       expect(response.status).to eq 200
-      expect(json_response[0]["name"]).to eq "Conta de agua"
+      expect(json_response[0]['name']).to eq 'Conta de agua'
       expect(json_response.length).to eq 1
     end
   end

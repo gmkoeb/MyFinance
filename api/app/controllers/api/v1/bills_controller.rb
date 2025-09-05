@@ -29,10 +29,8 @@ module Api
       def create
         bill = @company.bills.build(bill_params)
         bill.type = 'Bill'
-        if params[:monthly].present?
-          monthly_bill = @company.monthly_bills.where(name: bill.name).first
-          monthly_bill.update(payment_date: Time.zone.now)
-        end
+        create_monthly_bill(bill) if params[:monthly].present?
+
         return render status: :created, json: { message: I18n.t('bill.crud.create_success') } if bill.save
 
         render status: :bad_request,
@@ -51,6 +49,11 @@ module Api
       end
 
       private
+
+      def create_monthly_bill(bill)
+        monthly_bill = @company.monthly_bills.where(name: bill.name).first
+        monthly_bill.update(payment_date: Time.zone.now)
+      end
 
       def set_company_and_check_user
         @company = Company.find(params[:company_id])
